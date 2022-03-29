@@ -91,9 +91,9 @@ _ASM_NOKPROBE_SYMBOL(system_call_vectored_\name)
 	li	r11,\trapnr
 	std	r11,_TRAP(r1)
 	std	r12,_CCR(r1)
-	addi	r10,r1,STACK_FRAME_OVERHEAD
+	addi	r4,r1,STACK_FRAME_OVERHEAD
 	ld	r11,exception_marker@toc(r2)
-	std	r11,-16(r10)		/* "regshere" marker */
+	std	r11,-16(r4)		/* "regshere" marker */
 
 BEGIN_FTR_SECTION
 	HMT_MEDIUM
@@ -108,8 +108,37 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	 * but this is the best we can do.
 	 */
 
-	/* Calling convention has r9 = orig r0, r10 = regs */
-	mr	r9,r0
+	li r5,0
+	li r6,0
+	li r7,0
+	li r8,0
+
+	li r9,0
+	li r10,0
+	li r11,0
+	li r12,0
+	/* r13 is PACA */
+	li r14,0
+	li r15,0
+	li r16,0
+	li r17,0
+	li r18,0
+	li r19,0
+	li r20,0
+	li r21,0
+	li r22,0
+	li r23,0
+	li r24,0
+	li r25,0
+	li r26,0
+	li r27,0
+	li r28,0
+	li r29,0
+	li r30,0
+	li r31,0
+
+	/* Calling convention has r3 = orig r0, r4 = regs */
+	mr	r3,r0
 	bl	system_call_exception
 
 .Lsyscall_vectored_\name\()_exit:
@@ -138,8 +167,7 @@ BEGIN_FTR_SECTION
 	HMT_MEDIUM_LOW
 END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 
-	cmpdi	r3,0
-	bne	.Lsyscall_vectored_\name\()_restore_regs
+	b  	.Lsyscall_vectored_\name\()_restore_regs
 
 	/* rfscv returns with LR->NIA and CTR->MSR */
 	mtlr	r4
@@ -285,9 +313,9 @@ END_BTB_FLUSH_SECTION
 	std	r10,_LINK(r1)
 	std	r11,_TRAP(r1)
 	std	r12,_CCR(r1)
-	addi	r10,r1,STACK_FRAME_OVERHEAD
+	addi	r4,r1,STACK_FRAME_OVERHEAD
 	ld	r11,exception_marker@toc(r2)
-	std	r11,-16(r10)		/* "regshere" marker */
+	std	r11,-16(r4)		/* "regshere" marker */
 
 #ifdef CONFIG_PPC_BOOK3S
 	li	r11,1
@@ -308,8 +336,37 @@ END_BTB_FLUSH_SECTION
 	wrteei	1
 #endif
 
-	/* Calling convention has r9 = orig r0, r10 = regs */
-	mr	r9,r0
+	li r5,0
+	li r6,0
+	li r7,0
+	li r8,0
+
+	li r9,0
+	li r10,0
+	li r11,0
+	li r12,0
+	/* r13 is PACA */
+	li r14,0
+	li r15,0
+	li r16,0
+	li r17,0
+	li r18,0
+	li r19,0
+	li r20,0
+	li r21,0
+	li r22,0
+	li r23,0
+	li r24,0
+	li r25,0
+	li r26,0
+	li r27,0
+	li r28,0
+	li r29,0
+	li r30,0
+	li r31,0
+
+	/* Calling convention has r3 = orig r0, r4 = regs */
+	mr	r3,r0
 	bl	system_call_exception
 
 .Lsyscall_exit:
@@ -350,8 +407,7 @@ BEGIN_FTR_SECTION
 	stdcx.	r0,0,r1			/* to clear the reservation */
 END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
-	cmpdi	r3,0
-	bne	.Lsyscall_restore_regs
+	b	.Lsyscall_restore_regs /* FIXME This restores too much */
 	/* Zero volatile regs that may contain sensitive kernel data */
 	li	r0,0
 	li	r4,0

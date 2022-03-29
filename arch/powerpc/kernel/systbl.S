@@ -16,7 +16,9 @@
 
 #ifdef CONFIG_PPC64
 	.p2align	3
-#define __SYSCALL(nr, entry)	.8byte entry
+#define __SYSCALL(nr, entry)	.8byte __powerpc_##entry
+#define __powerpc_sys_ni_syscall sys_ni_syscall
+#define __powerpc_ppc64_personality ppc64_personality
 #else
 #define __SYSCALL(nr, entry)	.long entry
 #endif

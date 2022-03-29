@@ -309,6 +309,7 @@ static void __init vdso_fixup_features(void)
  * Called from setup_arch to initialize the bitmap of available
  * syscalls in the systemcfg page
  */
+asmlinkage long sys_ni_syscall(void); /* Why is this prototype required? */
 static void __init vdso_setup_syscall_map(void)
 {
 	unsigned int i;
