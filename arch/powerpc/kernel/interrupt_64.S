@@ -108,34 +108,9 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	 * but this is the best we can do.
 	 */
 
-	li r5,0
-	li r6,0
-	li r7,0
-	li r8,0
-
-	li r9,0
-	li r10,0
-	li r11,0
-	li r12,0
+	ZERO_GPRS(5,12)
 	/* r13 is PACA */
-	li r14,0
-	li r15,0
-	li r16,0
-	li r17,0
-	li r18,0
-	li r19,0
-	li r20,0
-	li r21,0
-	li r22,0
-	li r23,0
-	li r24,0
-	li r25,0
-	li r26,0
-	li r27,0
-	li r28,0
-	li r29,0
-	li r30,0
-	li r31,0
+	ZERO_NVGPRS()
 
 	/* Calling convention has r3 = orig r0, r4 = regs */
 	mr	r3,r0
@@ -336,34 +311,9 @@ END_BTB_FLUSH_SECTION
 	wrteei	1
 #endif
 
-	li r5,0
-	li r6,0
-	li r7,0
-	li r8,0
-
-	li r9,0
-	li r10,0
-	li r11,0
-	li r12,0
+	ZERO_GPRS(5,12)
 	/* r13 is PACA */
-	li r14,0
-	li r15,0
-	li r16,0
-	li r17,0
-	li r18,0
-	li r19,0
-	li r20,0
-	li r21,0
-	li r22,0
-	li r23,0
-	li r24,0
-	li r25,0
-	li r26,0
-	li r27,0
-	li r28,0
-	li r29,0
-	li r30,0
-	li r31,0
+	ZERO_NVGPRS()
 
 	/* Calling convention has r3 = orig r0, r4 = regs */
 	mr	r3,r0
