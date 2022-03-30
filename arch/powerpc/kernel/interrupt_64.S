@@ -141,13 +141,15 @@ END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 BEGIN_FTR_SECTION
 	HMT_MEDIUM_LOW
 END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
-
-	b  	.Lsyscall_vectored_\name\()_restore_regs
+	
+	cmpdi r3, 0
+	bne  	.Lsyscall_vectored_\name\()_restore_regs
 
 	/* rfscv returns with LR->NIA and CTR->MSR */
 	mtlr	r4
 	mtctr	r5
 
+	REST_NVGPRS(r1)
 	/* Could zero these as per ABI, but we may consider a stricter ABI
 	 * which preserves these if libc implementations can benefit, so
 	 * restore them for now until further measurement is done. */
@@ -158,10 +160,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	ld	r7,GPR7(r1)
 	ld	r8,GPR8(r1)
 	/* Zero volatile regs that may contain sensitive kernel data */
-	li	r9,0
-	li	r10,0
-	li	r11,0
-	li	r12,0
+	ZERO_GPRS(9, 12)
 	mtspr	SPRN_XER,r0
 
 	/*
@@ -357,18 +356,12 @@ BEGIN_FTR_SECTION
 	stdcx.	r0,0,r1			/* to clear the reservation */
 END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
-	b	.Lsyscall_restore_regs /* FIXME This restores too much */
+	cmpdi r3, 0
+	bne	.Lsyscall_restore_regs
 	/* Zero volatile regs that may contain sensitive kernel data */
+	REST_NVGPRS(r1)
 	li	r0,0
-	li	r4,0
-	li	r5,0
-	li	r6,0
-	li	r7,0
-	li	r8,0
-	li	r9,0
-	li	r10,0
-	li	r11,0
-	li	r12,0
+	ZERO_GPRS(4, 12)
 	mtctr	r0
 	mtspr	SPRN_XER,r0
 .Lsyscall_restore_regs_cont:
