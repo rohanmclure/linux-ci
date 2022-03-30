@@ -77,7 +77,7 @@ ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, s
 	if ( (unsigned long)n >= 4096 )
 		return sys_old_select((void __user *)n);
 
-	return sys_select(n, inp, outp, exp, tvp);
+	return __powerpc_sys_select(n, inp, outp, exp, tvp);
 }
 #endif
 
