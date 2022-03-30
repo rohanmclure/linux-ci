@@ -75,7 +75,7 @@ int
 ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
 {
 	if ( (unsigned long)n >= 4096 )
-		return sys_old_select((void __user *)n);
+		return __powerpc_sys_old_select((void __user *)n);
 
 	return __powerpc_sys_select(n, inp, outp, exp, tvp);
 }
