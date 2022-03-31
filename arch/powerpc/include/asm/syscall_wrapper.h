@@ -48,15 +48,15 @@ struct pt_regs;
 #endif /* CONFIG_COMPAT */
 
 #define __SYSCALL_DEFINEx(x, name, ...)						\
-	asmlinkage long __powerpc_sys##name(const struct pt_regs *regs);		\
+	asmlinkage long __powerpc_sys##name(const struct pt_regs *regs);	\
 	ALLOW_ERROR_INJECTION(__powerpc_sys##name, ERRNO);			\
-	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+	long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));			\
 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
 	asmlinkage long __powerpc_sys##name(const struct pt_regs *regs)		\
 	{									\
 		return __se_sys##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
 	}									\
-	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))		\
+	long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))			\
 	{									\
 		long ret = __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));	\
 		__MAP(x,__SC_TEST,__VA_ARGS__);					\
@@ -81,14 +81,14 @@ struct pt_regs;
 
 #ifdef CONFIG_PPC64
 
-#define sys_personality __powerpc_sys_personality
+#define sys_personality __se_sys_personality
 
 #endif /* CONFIG_PPC64 */
 
 #ifdef CONFIG_PPC32
 
-#define sys_select __powerpc_select
-#define sys_old_select __powerpc_old_select
+#define sys_select __se_sys_select
+#define sys_old_select __se_old_select
 
 #endif /* CONFIG_PPC32 */
 
