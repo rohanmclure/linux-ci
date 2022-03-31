@@ -79,4 +79,17 @@ struct pt_regs;
 
 #define SYS_NI(name) SYSCALL_ALIAS(__powerpc_sys_##name, sys_ni_posix_timers);
 
+#ifdef CONFIG_PPC64
+
+#define sys_personality __powerpc_sys_personality
+
+#endif /* CONFIG_PPC64 */
+
+#ifdef CONFIG_PPC32
+
+#define sys_select __powerpc_select
+#define sys_old_select __powerpc_old_select
+
+#endif /* CONFIG_PPC32 */
+
 #endif /* __ASM_SYSCALL_WRAPPER_H */
