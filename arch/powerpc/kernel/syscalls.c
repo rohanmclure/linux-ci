@@ -75,9 +75,9 @@ int
 ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
 {
 	if ( (unsigned long)n >= 4096 )
-		return __powerpc_sys_old_select((void __user *)n);
+		return sys_old_select((void __user *)n);
 
-	return __powerpc_sys_select(n, inp, outp, exp, tvp);
+	return sys_select(n, inp, outp, exp, tvp);
 }
 #endif
 
@@ -89,7 +89,7 @@ long ppc64_personality(unsigned long personality)
 	if (personality(current->personality) == PER_LINUX32
 	    && personality(personality) == PER_LINUX)
 		personality = (personality & ~PER_MASK) | PER_LINUX32;
-	ret = ksys_personality(personality);
+	ret = sys_personality(personality);
 	if (personality(ret) == PER_LINUX32)
 		ret = (ret & ~PER_MASK) | PER_LINUX;
 	return ret;
