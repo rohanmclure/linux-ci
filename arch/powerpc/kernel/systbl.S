@@ -22,6 +22,7 @@
 #else
 #define __SYSCALL(nr, entry)	.long __powerpc_##entry
 #define __powerpc_ppc_select ppc_select
+#define __powerpc_ppc_fadvise64_64 ppc_fadvise64_64
 #endif
 
 #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
