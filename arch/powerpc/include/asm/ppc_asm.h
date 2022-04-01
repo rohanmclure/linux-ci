@@ -34,6 +34,19 @@
 .endm
 
 /*
+ * Simplification of OP_REGS, admitting an arbitrary right hand operand.
+ *
+ *   op  reg, rhs
+ */
+.macro BINOP_REGS op, rhs, start, end
+  .Lreg=\start
+  .rept (\end - \start + 1)
+  \op .Lreg, \rhs
+  .Lreg=.Lreg+1
+  .endr
+.endm
+
+/*
  * Macros for storing registers into and loading registers from
  * exception frames.
  */
@@ -48,6 +61,10 @@
 #define SAVE_NVGPRS(base)		SAVE_GPRS(13, 31, base)
 #define REST_NVGPRS(base)		REST_GPRS(13, 31, base)
 #endif
+
+#define ZERO_GPRS(start, end)  BINOP_REGS li, 0, start, end
+#define ZERO_NVGPRS() ZERO_GPRS(14,31)
+#define ZERO_GPR(n)   ZERO_GPRS(n, n)
 
 #define SAVE_GPR(n, base)		SAVE_GPRS(n, n, base)
 #define REST_GPR(n, base)		REST_GPRS(n, n, base)
