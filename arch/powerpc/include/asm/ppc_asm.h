@@ -33,7 +33,12 @@
 	.endr
 .endm
 
-.macro SIMPLE_OP_REGS op, rhs, start, end
+/*
+ * Simplification of OP_REGS, admitting an arbitrary right hand operand.
+ *
+ *   op  reg, rhs
+ */
+.macro BINOP_REGS op, rhs, start, end
   .Lreg=\start
   .rept (\end - \start + 1)
   \op .Lreg, \rhs
@@ -57,7 +62,7 @@
 #define REST_NVGPRS(base)		REST_GPRS(14, 31, base)
 #endif
 
-#define ZERO_GPRS(start, end)  SIMPLE_OP_REGS li, 0, start, end
+#define ZERO_GPRS(start, end)  BINOP_REGS li, 0, start, end
 #define ZERO_NVGPRS() ZERO_GPRS(14,31)
 #define ZERO_GPR(n)   ZERO_GPRS(n, n)
 

@@ -20,9 +20,7 @@
 #define __powerpc_sys_ni_syscall sys_ni_syscall
 #define __powerpc_ppc64_personality ppc64_personality
 #else
-#define __SYSCALL(nr, entry)	.long entry
-#define __powerpc_ppc_select ppc_select
-#define __powerpc_ppc_select ppc_old_select
+#define __SYSCALL(nr, entry)	.long __powerpc_##entry
 #endif
 
 #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
