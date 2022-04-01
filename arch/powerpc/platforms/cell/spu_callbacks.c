@@ -36,7 +36,7 @@
 
 static void *spu_syscall_table[] = {
 #define __SYSCALL_WITH_COMPAT(nr, entry, compat) __SYSCALL(nr, entry)
-#define __SYSCALL(nr, entry) [nr] = entry,
+#define __SYSCALL(nr, entry) [nr] = __powerpc_##entry,
 #include <asm/syscall_table_spu.h>
 };
 
