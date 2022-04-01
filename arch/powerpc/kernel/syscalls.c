@@ -65,6 +65,9 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
 }
 
 #ifdef CONFIG_PPC32
+asmlinkage long sys_old_select(struct sel_arg_struct __user *arg);
+asmlinkage long sys_select(int n, fd_set __user *inp, fd_set __user *outp,
+			fd_set __user *exp, struct __kernel_old_timeval __user *tvp);
 /*
  * Due to some executables calling the wrong select we sometimes
  * get wrong args.  This determines how the args are being passed
@@ -82,6 +85,7 @@ ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, s
 #endif
 
 #ifdef CONFIG_PPC64
+asmlinkage long sys_personality(unsigned int personality);
 long ppc64_personality(unsigned long personality)
 {
 	long ret;
