@@ -88,7 +88,7 @@ struct pt_regs;
 #ifdef CONFIG_PPC32
 
 #define sys_select __se_sys_select
-#define sys_old_select __se_old_select
+#define sys_old_select __se_sys_old_select
 
 #endif /* CONFIG_PPC32 */
 
