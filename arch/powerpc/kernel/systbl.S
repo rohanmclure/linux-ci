@@ -33,9 +33,9 @@
 #else
 
 #ifdef CONFIG_PPC64
-#define __SYSCALL(nr, entry)	.8byte __powerpc_##entry
+#define __SYSCALL(nr, entry)	.8byte entry
 #else
-#define __SYSCALL(nr, entry)	.long __powerpc_##entry
+#define __SYSCALL(nr, entry)	.long entry
 #endif
 
 #endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
