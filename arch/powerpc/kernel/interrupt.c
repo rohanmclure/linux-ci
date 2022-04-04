@@ -18,6 +18,7 @@
 #include <asm/signal.h>
 #include <asm/switch_to.h>
 #include <asm/syscall.h>
+#include <asm/syscall_wrapper.h>
 #include <asm/time.h>
 #include <asm/tm.h>
 #include <asm/unistd.h>
