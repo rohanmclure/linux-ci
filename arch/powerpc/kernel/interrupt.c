@@ -4,7 +4,6 @@
 #include <linux/err.h>
 #include <linux/compat.h>
 #include <linux/sched/debug.h> /* for show_regs */
-#include <linux/syscalls.h>
 
 #include <asm/kup.h>
 #include <asm/cputime.h>
@@ -17,7 +16,6 @@
 #include <asm/signal.h>
 #include <asm/switch_to.h>
 #include <asm/syscall.h>
-#include <asm/syscall_wrapper.h>
 #include <asm/time.h>
 #include <asm/tm.h>
 #include <asm/unistd.h>
@@ -230,7 +228,8 @@ notrace long system_call_exception(unsigned long r0, struct pt_regs *regs)
 	#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER 
 	return f(regs);
 	#else
-	return f(SC_POWERPC_REGS_TO_ARGS(6));
+	return f(regs->gpr[3], regs->gpr[4], regs->gpr[5],
+		 regs->gpr[6], regs->gpr[7], regs->gpr[8]);
 	#endif 
 }
 
