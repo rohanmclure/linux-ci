@@ -4,6 +4,7 @@
 #include <linux/err.h>
 #include <linux/compat.h>
 #include <linux/sched/debug.h> /* for show_regs */
+#include <linux/syscalls.h>
 
 #include <asm/asm-prototypes.h>
 #include <asm/kup.h>
@@ -25,7 +26,11 @@
 unsigned long global_dbcr0[NR_CPUS];
 #endif
 
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
 typedef long (*syscall_fn)(struct pt_regs *);
+#else
+typedef long (*syscall_fn)(long, long, long, long, long, long);
+#endif 
 
 #ifdef CONFIG_PPC_BOOK3S_64
 DEFINE_STATIC_KEY_FALSE(interrupt_exit_not_reentrant);
@@ -221,8 +226,12 @@ notrace long system_call_exception(unsigned long r0, struct pt_regs *regs)
 	} else {
 		f = (void *)sys_call_table[r0];
 	}
-
+	
+	#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER 
 	return f(regs);
+	#else
+	return f(SC_POWERPC_REGS_TO_ARGS(6));
+	#endif 
 }
 
 static notrace void booke_load_dbcr0(void)
