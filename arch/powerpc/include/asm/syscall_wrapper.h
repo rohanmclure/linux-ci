@@ -71,8 +71,12 @@ struct pt_regs;
 
 #define SYSCALL_DEFINE0(sname)							\
 	SYSCALL_METADATA(_##sname, 0);						\
+	long sys_##name(void);							\
 	asmlinkage long __powerpc_sys_##sname(const struct pt_regs *__unused);	\
 	ALLOW_ERROR_INJECTION(__powerpc_sys_##sname, ERRNO);			\
+	long sys_##sname(void) {						\
+		return __powerpc_sys_##sname(NULL);				\
+	}									\
 	asmlinkage long __powerpc_sys_##sname(const struct pt_regs *__unused)
 
 #define COND_SYSCALL(name)							\
