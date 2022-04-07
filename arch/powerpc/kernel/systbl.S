@@ -22,6 +22,15 @@
 
 #define __powerpc_sys_ni_syscall sys_ni_syscall
 #define __powerpc_compat_sys_pread64 compat_sys_pread64
+#define __powerpc_compat_sys_pwrite64 compat_sys_pwrite64
+#define __powerpc_compat_sys_readahead compat_sys_readahead
+#define __powerpc_compat_sys_mmap2 compat_sys_mmap2
+#define __powerpc_compat_sys_truncate64 compat_sys_truncate64
+#define __powerpc_compat_sys_ftruncate64 compat_sys_ftruncate64
+#define __powerpc_ppc32_fadvise64 ppc32_fadvise64
+#define __powerpc_ppc_fadvise64_64 ppc_fadvise64_64
+#define __powerpc_compat_sys_sync_file_range2 compat_sys_sync_file_range2
+#define __powerpc_compat_sys_fallocate compat_sys_fallocate
 
 #ifdef CONFIG_PPC64
 #define __SYSCALL(nr, entry)	.8byte __powerpc_##entry
