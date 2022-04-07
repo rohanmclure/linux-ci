@@ -21,6 +21,7 @@
 #ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
 
 #define __powerpc_sys_ni_syscall sys_ni_syscall
+#define __powerpc_compat_sys_pread64 compat_sys_pread64
 
 #ifdef CONFIG_PPC64
 #define __SYSCALL(nr, entry)	.8byte __powerpc_##entry

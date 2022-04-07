@@ -19,7 +19,7 @@ struct pt_regs;
 
 #define COMPAT_SYSCALL_DEFINEx(x, name, ...)						\
 	asmlinkage long __powerpc_compat_sys##name(const struct pt_regs *regs);		\
-	ALLOW_ERROR_INJECTION(__powerpc_compat_sys##name, ERRNO);				\
+	ALLOW_ERROR_INJECTION(__powerpc_compat_sys##name, ERRNO);			\
 	static long __se_compat_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
 	static inline long __do_compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
 	asmlinkage long __powerpc_compat_sys##name(const struct pt_regs *regs)		\
