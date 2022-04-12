@@ -25,7 +25,6 @@
 #define __powerpc_compat_sys_pread64 compat_sys_pread64
 #define __powerpc_compat_sys_pwrite64 compat_sys_pwrite64
 #define __powerpc_compat_sys_readahead compat_sys_readahead
-#define __powerpc_compat_sys_mmap2 compat_sys_mmap2
 #define __powerpc_compat_sys_truncate64 compat_sys_truncate64
 #define __powerpc_compat_sys_ftruncate64 compat_sys_ftruncate64
 #define __powerpc_ppc32_fadvise64 ppc32_fadvise64

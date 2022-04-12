@@ -48,9 +48,9 @@
 #include <asm/syscalls.h>
 #include <asm/switch_to.h>
 
-unsigned long compat_sys_mmap2(unsigned long addr, size_t len,
-			  unsigned long prot, unsigned long flags,
-			  unsigned long fd, unsigned long pgoff)
+COMPAT_SYSCALL_DEFINE6(mmap2, unsigned long, addr, size_t, len,
+                       unsigned long, prot, unsigned long, flags,
+                       unsigned long, fd, unsigned long, pgoff)
 {
 	/* This should remain 12 even if PAGE_SIZE changes */
 	return sys_mmap(addr, len, prot, flags, fd, pgoff << 12);
