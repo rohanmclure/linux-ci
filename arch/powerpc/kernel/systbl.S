@@ -22,22 +22,15 @@
 
 /* Some syscalls don't use the wrapper */
 #define __powerpc_sys_ni_syscall sys_ni_syscall
-#define __powerpc_compat_sys_pread64 compat_sys_pread64
-#define __powerpc_compat_sys_pwrite64 compat_sys_pwrite64
-#define __powerpc_compat_sys_readahead compat_sys_readahead
-#define __powerpc_compat_sys_truncate64 compat_sys_truncate64
-#define __powerpc_compat_sys_ftruncate64 compat_sys_ftruncate64
-#define __powerpc_ppc32_fadvise64 ppc32_fadvise64
-#define __powerpc_ppc_fadvise64_64 ppc_fadvise64_64
-#define __powerpc_compat_sys_sync_file_range2 compat_sys_sync_file_range2
-#define __powerpc_compat_sys_fallocate compat_sys_fallocate
+#define __powerpc_ppc32_fadvise64 __powerpc_compat_sys_ppc32_fadvise64
+#define __powerpc_ppc_fadvise64_64 __powerpc_compat_sys_ppc_fadvise64_64
 
 #ifdef CONFIG_PPC64
+#define __powerpc_ppc64_personality __powerpc_sys_ppc64_personality
 #define __SYSCALL(nr, entry)	.8byte __powerpc_##entry
-#define __powerpc_ppc64_personality ppc64_personality
 #else
+#define __powerpc_ppc_select __powerpc_sys_ppc_select
 #define __SYSCALL(nr, entry)	.long __powerpc_##entry
-#define __powerpc_ppc_select ppc_select
 #endif
 
 #else
