@@ -59,7 +59,8 @@
 	{									\
 		return __se_sys##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
 	}									\
-	type sys##name(__MAP(x,__SC_DECL,__VA_ARGS__)) {			\
+	type sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))				\
+	{									\
 		return __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
 	}									\
 	static type __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))		\

@@ -57,7 +57,8 @@ struct pt_regs;
 	{									\
 		return __se_sys##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
 	}									\
-	long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__)) {			\
+	long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))				\
+	{									\
 		return __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
 	}									\
 	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))		\
@@ -74,7 +75,8 @@ struct pt_regs;
 	long sys_##name(void);							\
 	asmlinkage long __powerpc_sys_##sname(const struct pt_regs *__unused);	\
 	ALLOW_ERROR_INJECTION(__powerpc_sys_##sname, ERRNO);			\
-	long sys_##sname(void) {						\
+	long sys_##sname(void)							\
+	{									\
 		return __powerpc_sys_##sname(NULL);				\
 	}									\
 	asmlinkage long __powerpc_sys_##sname(const struct pt_regs *__unused)
