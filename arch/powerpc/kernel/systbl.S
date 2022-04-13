@@ -36,8 +36,10 @@
 #else
 
 #ifdef CONFIG_PPC64
+#define ppc64_personality sys_ppc64_personality
 #define __SYSCALL(nr, entry)	.8byte entry
 #else
+#define ppc_select sys_ppc_select
 #define __SYSCALL(nr, entry)	.long entry
 #endif
 

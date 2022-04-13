@@ -73,7 +73,7 @@
 	static inline type __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
 #else
 #define PPC_SPEC_SYSCALL_DEFINE(x, type, name, ...)				\
-	type name(__MAP(x,__SC_DECL,__VA_ARGS__))
+	type compat_##name(__MAP(x,__SC_DECL,__VA_ARGS__))
 #endif
 
 PPC_SPEC_SYSCALL_DEFINE(6, unsigned long, mmap2, unsigned long, addr, size_t, len,
