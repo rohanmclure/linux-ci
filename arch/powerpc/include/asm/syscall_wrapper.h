@@ -17,7 +17,7 @@ struct pt_regs;
 
 #ifdef CONFIG_COMPAT
 
-#define COMPAT_SYSCALL_DEFINE_T(x, type, name, ...)						\
+#define COMPAT_SYSCALL_DEFINE_T(x, type, name, ...)					\
 	asmlinkage type __powerpc_compat_sys##name(const struct pt_regs *regs);		\
 	ALLOW_ERROR_INJECTION(__powerpc_compat_sys##name, ERRNO);			\
 	static type __se_compat_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
@@ -49,6 +49,28 @@ struct pt_regs;
 	SYSCALL_ALIAS(__powerpc_compat_sys_##name, sys_ni_posix_timers);
 
 #endif /* CONFIG_COMPAT */
+
+#define SYSCALL_DEFINE_T(x, type, name, ...)					\
+	asmlinkage type __powerpc_sys##name(const struct pt_regs *regs);	\
+	ALLOW_ERROR_INJECTION(__powerpc_sys##name, ERRNO);			\
+	type sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));				\
+	static type __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+	static inline type __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
+	asmlinkage type __powerpc_sys##name(const struct pt_regs *regs)		\
+	{									\
+		return __se_sys##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
+	}									\
+	type sys##name(__MAP(x,__SC_DECL,__VA_ARGS__)) {			\
+		return __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
+	}									\
+	static type __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))		\
+	{									\
+		type ret = __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));	\
+		__MAP(x,__SC_TEST,__VA_ARGS__);					\
+		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));		\
+		return ret;							\
+	}									\
+	static inline type __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
 
 #define __SYSCALL_DEFINEx(x, name, ...)						\
 	asmlinkage long __powerpc_sys##name(const struct pt_regs *regs);	\

@@ -22,8 +22,8 @@
 
 /* Some syscalls don't use the wrapper */
 #define __powerpc_sys_ni_syscall sys_ni_syscall
-#define __powerpc_ppc32_fadvise64 __powerpc_compat_sys_ppc32_fadvise64
-#define __powerpc_ppc_fadvise64_64 __powerpc_compat_sys_ppc_fadvise64_64
+#define __powerpc_ppc32_fadvise64 __powerpc_sys_ppc32_fadvise64
+#define __powerpc_ppc_fadvise64_64 __powerpc_sys_ppc_fadvise64_64
 
 #ifdef CONFIG_PPC64
 #define __powerpc_ppc64_personality __powerpc_sys_ppc64_personality

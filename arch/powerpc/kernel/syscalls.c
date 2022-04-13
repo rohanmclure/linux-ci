@@ -100,7 +100,7 @@ SYSCALL_DEFINE1(ppc64_personality, unsigned long, personality)
 }
 #endif
 
-COMPAT_SYSCALL_DEFINE6(ppc_fadvise64_64, int, fd, int, advice, u32, offset_high, u32, offset_low,
+SYSCALL_DEFINE6(ppc_fadvise64_64, int, fd, int, advice, u32, offset_high, u32, offset_low,
                        u32, len_high, u32, len_low)
 {
 	return ksys_fadvise64_64(fd, (u64)offset_high << 32 | offset_low,
