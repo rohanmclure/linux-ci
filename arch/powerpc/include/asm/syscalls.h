@@ -8,6 +8,34 @@
 #include <linux/types.h>
 #include <linux/compat.h>
 
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+#define PPC_SPEC_SYSCALL_DEFINE(x, type, name, ...)				\
+	asmlinkage type __powerpc_##name(const struct pt_regs *regs);		\
+	ALLOW_ERROR_INJECTION(__powerpc_##name, ERRNO);				\
+	type sys_##name(__MAP(x,__SC_DECL,__VA_ARGS__));			\
+	static type __se_##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+	static inline type __do_##name(__MAP(x,__SC_DECL,__VA_ARGS__));		\
+	asmlinkage type __powerpc_##name(const struct pt_regs *regs)		\
+	{									\
+		return __se_##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
+	}									\
+	type sys_##name(__MAP(x,__SC_DECL,__VA_ARGS__))				\
+	{									\
+		return __do_##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
+	}									\
+	static type __se_##name(__MAP(x,__SC_LONG,__VA_ARGS__))			\
+	{									\
+		type ret = __do_##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
+		__MAP(x,__SC_TEST,__VA_ARGS__);					\
+		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));		\
+		return ret;							\
+	}									\
+	static inline type __do_##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+#else
+#define PPC_SPEC_SYSCALL_DEFINE(x, type, name, ...)				\
+	type name(__MAP(x,__SC_DECL,__VA_ARGS__))
+#endif
+
 struct rtas_args;
 
 asmlinkage long sys_mmap(unsigned long addr, size_t len,

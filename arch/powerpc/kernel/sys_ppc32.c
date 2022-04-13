@@ -48,35 +48,8 @@
 #include <asm/syscalls.h>
 #include <asm/switch_to.h>
 
-#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
-#define PPC_SPEC_SYSCALL_DEFINE(x, type, name, ...)				\
-	asmlinkage type __powerpc_sys##name(const struct pt_regs *regs);	\
-	ALLOW_ERROR_INJECTION(__powerpc_sys##name, ERRNO);			\
-	type sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));				\
-	static type __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
-	static inline type __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
-	asmlinkage type __powerpc_sys##name(const struct pt_regs *regs)		\
-	{									\
-		return __se_sys##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
-	}									\
-	type sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))				\
-	{									\
-		return __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
-	}									\
-	static type __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__))		\
-	{									\
-		type ret = __do_sys##name(__MAP(x,__SC_CAST,__VA_ARGS__));	\
-		__MAP(x,__SC_TEST,__VA_ARGS__);					\
-		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));		\
-		return ret;							\
-	}									\
-	static inline type __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
-#else
-#define PPC_SPEC_SYSCALL_DEFINE(x, type, name, ...)				\
-	type compat_##name(__MAP(x,__SC_DECL,__VA_ARGS__))
-#endif
-
-PPC_SPEC_SYSCALL_DEFINE(6, unsigned long, mmap2, unsigned long, addr, size_t, len,
+PPC_SPEC_SYSCALL_DEFINE(6, unsigned long, compat_sys_mmap2,
+                        unsigned long, addr, size_t, len,
                         unsigned long, prot, unsigned long, flags,
                         unsigned long, fd, unsigned long, pgoff)
 {
@@ -96,53 +69,60 @@ PPC_SPEC_SYSCALL_DEFINE(6, unsigned long, mmap2, unsigned long, addr, size_t, le
 #define merge_64(high, low) ((u64)high << 32) | low
 #endif
 
-PPC_SPEC_SYSCALL_DEFINE(6, compat_ssize_t, pread64, unsigned int, fd,
+PPC_SPEC_SYSCALL_DEFINE(6, compat_ssize_t, compat_sys_pread64,
+                        unsigned int, fd,
 			char __user *, ubuf, compat_size_t, count,
 			u32, reg6, u32, pos1, u32, pos2)
 {
 	return ksys_pread64(fd, ubuf, count, merge_64(pos1, pos2));
 }
 
-PPC_SPEC_SYSCALL_DEFINE(6, compat_ssize_t, pwrite64, unsigned int, fd,
+PPC_SPEC_SYSCALL_DEFINE(6, compat_ssize_t, compat_sys_pwrite64,
+                        unsigned int, fd,
 			const char __user *, ubuf, compat_size_t, count,
 			u32, reg6, u32, pos1, u32, pos2)
 {
 	return ksys_pwrite64(fd, ubuf, count, merge_64(pos1, pos2));
 }
 
-PPC_SPEC_SYSCALL_DEFINE(5, compat_size_t, readahead, int, fd, u32, r4, u32,
+PPC_SPEC_SYSCALL_DEFINE(5, compat_ssize_t, compat_sys_readahead,
+                        int, fd, u32, r4, u32,
 			offset1, u32, offset2, u32, count)
 {
 	return ksys_readahead(fd, merge_64(offset1, offset2), count);
 }
 
-PPC_SPEC_SYSCALL_DEFINE(4, int, truncate64, const char __user *, path, u32, reg4,
+PPC_SPEC_SYSCALL_DEFINE(4, int, compat_sys_truncate64,
+                        const char __user *, path, u32, reg4,
 			unsigned long, len1, unsigned long, len2)
 {
 	return ksys_truncate(path, merge_64(len1, len2));
 }
 
-PPC_SPEC_SYSCALL_DEFINE(6, long, fallocate, int, fd, int, mode, u32, offset1, u32, offset2,
+PPC_SPEC_SYSCALL_DEFINE(6, long, compat_sys_fallocate,
+                        int, fd, int, mode, u32, offset1, u32, offset2,
 			u32, len1, u32, len2)
 {
 	return ksys_fallocate(fd, mode, ((loff_t)offset1 << 32) | offset2,
 			     merge_64(len1, len2));
 }
 
-PPC_SPEC_SYSCALL_DEFINE(4, int, ftruncate64, unsigned int, fd, u32, reg4, unsigned long, len1,
+PPC_SPEC_SYSCALL_DEFINE(4, int, compat_sys_ftruncate64,
+                        unsigned int, fd, u32, reg4, unsigned long, len1,
 			unsigned long, len2)
 {
 	return ksys_ftruncate(fd, merge_64(len1, len2));
 }
 
-PPC_SPEC_SYSCALL_DEFINE(6, long, ppc32_fadvise64, int, fd, u32, unused, u32, offset1, u32, offset2,
+PPC_SPEC_SYSCALL_DEFINE(6, long, ppc32_fadvise64,
+                        int, fd, u32, unused, u32, offset1, u32, offset2,
 			size_t, len, int, advice)
 {
 	return ksys_fadvise64_64(fd, merge_64(offset1, offset2), len,
 				 advice);
 }
 
-PPC_SPEC_SYSCALL_DEFINE(6, long, sync_file_range2, int, fd, int, flags,
+PPC_SPEC_SYSCALL_DEFINE(6, long, compat_sys_sync_file_range2, int, fd, unsigned, flags,
                         unsigned, offset1, unsigned, offset2,
                         unsigned, nbytes1, unsigned, nbytes2)
 {
