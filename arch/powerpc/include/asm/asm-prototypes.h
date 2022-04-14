@@ -34,6 +34,39 @@ int64_t __opal_call(int64_t a0, int64_t a1, int64_t a2, int64_t a3,
 		    int64_t a4, int64_t a5, int64_t a6, int64_t a7,
 		    int64_t opcode, uint64_t msr);
 
+/* VMX copying */
+int enter_vmx_usercopy(void);
+int exit_vmx_usercopy(void);
+int enter_vmx_ops(void);
+void *exit_vmx_ops(void *dest);
+
+/* signals, syscalls and interrupts */
+long sys_swapcontext(struct ucontext __user *old_ctx,
+		    struct ucontext __user *new_ctx,
+		    long ctx_size);
+#ifdef CONFIG_PPC32
+long sys_debug_setcontext(struct ucontext __user *ctx,
+			  int ndbg, struct sig_dbg_op __user *dbg);
+int
+ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp,
+	   struct __kernel_old_timeval __user *tvp);
+unsigned long __init early_init(unsigned long dt_ptr);
+void __init machine_init(u64 dt_ptr);
+#endif
+long system_call_exception(unsigned long r0, struct pt_regs *regs);
+notrace unsigned long syscall_exit_prepare(unsigned long r3, struct pt_regs *regs, long scv);
+notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs);
+notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs);
+#ifdef CONFIG_PPC64
+unsigned long syscall_exit_restart(unsigned long r3, struct pt_regs *regs);
+unsigned long interrupt_exit_user_restart(struct pt_regs *regs);
+unsigned long interrupt_exit_kernel_restart(struct pt_regs *regs);
+#endif
+
+long ppc_fadvise64_64(int fd, int advice, u32 offset_high, u32 offset_low,
+		      u32 len_high, u32 len_low);
+long sys_switch_endian(void);
+
 /* prom_init (OpenFirmware) */
 unsigned long __init prom_init(unsigned long r3, unsigned long r4,
 			       unsigned long pp,

@@ -8,6 +8,39 @@
 #include <linux/types.h>
 #include <linux/compat.h>
 
+/*
+ * For PowerPC specific syscall implementations, wrapper takes exact name and
+ * return type for a given function.
+ */
+
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+#define PPC_SYSCALL_DEFINE(x, type, name, ...)					\
+	asmlinkage type __powerpc_##name(const struct pt_regs *regs);		\
+	ALLOW_ERROR_INJECTION(__powerpc_##name, ERRNO);				\
+	type sys_##name(__MAP(x,__SC_DECL,__VA_ARGS__));			\
+	static type __se_##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+	static inline type __do_##name(__MAP(x,__SC_DECL,__VA_ARGS__));		\
+	asmlinkage type __powerpc_##name(const struct pt_regs *regs)		\
+	{									\
+		return __se_##name(SC_POWERPC_REGS_TO_ARGS(x,__VA_ARGS__));	\
+	}									\
+	type sys_##name(__MAP(x,__SC_DECL,__VA_ARGS__))				\
+	{									\
+		return __do_##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
+	}									\
+	static type __se_##name(__MAP(x,__SC_LONG,__VA_ARGS__))			\
+	{									\
+		type ret = __do_##name(__MAP(x,__SC_CAST,__VA_ARGS__));		\
+		__MAP(x,__SC_TEST,__VA_ARGS__);					\
+		__PROTECT(x, ret,__MAP(x,__SC_ARGS,__VA_ARGS__));		\
+		return ret;							\
+	}									\
+	static inline type __do_##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+#else
+#define PPC_SYSCALL_DEFINE(x, type, name, ...)					\
+	type name(__MAP(x,__SC_DECL,__VA_ARGS__))
+#endif
+
 struct rtas_args;
 
 asmlinkage long sys_mmap(unsigned long addr, size_t len,
@@ -24,30 +57,30 @@ long ppc_fadvise64_64(int fd, int advice, u32 offset_high, u32 offset_low,
 		      u32 len_high, u32 len_low);
 
 #ifdef CONFIG_COMPAT
-unsigned long compat_sys_mmap2(unsigned long addr, size_t len,
+asmlinkage unsigned long compat_sys_mmap2(unsigned long addr, size_t len,
 			       unsigned long prot, unsigned long flags,
 			       unsigned long fd, unsigned long pgoff);
 
-compat_ssize_t compat_sys_pread64(unsigned int fd, char __user *ubuf, compat_size_t count,
+asmlinkage compat_ssize_t compat_sys_pread64(unsigned int fd, char __user *ubuf, compat_size_t count,
 				  u32 reg6, u32 pos1, u32 pos2);
 
-compat_ssize_t compat_sys_pwrite64(unsigned int fd, const char __user *ubuf, compat_size_t count,
+asmlinkage compat_ssize_t compat_sys_pwrite64(unsigned int fd, const char __user *ubuf, compat_size_t count,
 				   u32 reg6, u32 pos1, u32 pos2);
 
-compat_ssize_t compat_sys_readahead(int fd, u32 r4, u32 offset1, u32 offset2, u32 count);
+asmlinkage compat_ssize_t compat_sys_readahead(int fd, u32 r4, u32 offset1, u32 offset2, u32 count);
 
-int compat_sys_truncate64(const char __user *path, u32 reg4,
+asmlinkage int compat_sys_truncate64(const char __user *path, u32 reg4,
 			  unsigned long len1, unsigned long len2);
 
-long compat_sys_fallocate(int fd, int mode, u32 offset1, u32 offset2, u32 len1, u32 len2);
+asmlinkage long compat_sys_fallocate(int fd, int mode, u32 offset1, u32 offset2, u32 len1, u32 len2);
 
-int compat_sys_ftruncate64(unsigned int fd, u32 reg4, unsigned long len1,
+asmlinkage int compat_sys_ftruncate64(unsigned int fd, u32 reg4, unsigned long len1,
 			   unsigned long len2);
 
-long ppc32_fadvise64(int fd, u32 unused, u32 offset1, u32 offset2,
+asmlinkage long ppc32_fadvise64(int fd, u32 unused, u32 offset1, u32 offset2,
 		     size_t len, int advice);
 
-long compat_sys_sync_file_range2(int fd, unsigned int flags,
+asmlinkage long compat_sys_sync_file_range2(int fd, unsigned int flags,
 				 unsigned int offset1, unsigned int offset2,
 				 unsigned int nbytes1, unsigned int nbytes2);
 #endif

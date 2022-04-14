@@ -64,14 +64,18 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
 }
 
 #ifdef CONFIG_PPC32
+asmlinkage long sys_old_select(struct sel_arg_struct __user *arg);
+asmlinkage long sys_select(int n, fd_set __user *inp, fd_set __user *outp,
+			fd_set __user *exp, struct __kernel_old_timeval __user *tvp);
 /*
  * Due to some executables calling the wrong select we sometimes
  * get wrong args.  This determines how the args are being passed
  * (a single ptr to them all args passed) then calls
  * sys_select() with the appropriate args. -- Cort
  */
-int
-ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
+PPC_SYSCALL_DEFINE(5, long, ppc_select,
+                        int, n, fd_set __user *, inp, fd_set __user *, outp,
+                        fd_set __user *, exp, struct __kernel_old_timeval __user *, tvp)
 {
 	if ( (unsigned long)n >= 4096 )
 		return sys_old_select((void __user *)n);
@@ -81,7 +85,9 @@ ppc_select(int n, fd_set __user *inp, fd_set __user *outp, fd_set __user *exp, s
 #endif
 
 #ifdef CONFIG_PPC64
-long ppc64_personality(unsigned long personality)
+asmlinkage long sys_personality(unsigned int personality);
+
+PPC_SYSCALL_DEFINE(1, long, ppc64_personality, unsigned long, personality)
 {
 	long ret;
 
@@ -95,8 +101,9 @@ long ppc64_personality(unsigned long personality)
 }
 #endif
 
-long ppc_fadvise64_64(int fd, int advice, u32 offset_high, u32 offset_low,
-		      u32 len_high, u32 len_low)
+PPC_SYSCALL_DEFINE(6, long, ppc_fadvise64_64,
+                        int, fd, int, advice, u32, offset_high, u32, offset_low,
+                        u32, len_high, u32, len_low)
 {
 	return ksys_fadvise64_64(fd, (u64)offset_high << 32 | offset_low,
 				 (u64)len_high << 32 | len_low, advice);

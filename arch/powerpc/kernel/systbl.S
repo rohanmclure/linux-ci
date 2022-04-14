@@ -16,10 +16,27 @@
 
 #ifdef CONFIG_PPC64
 	.p2align	3
+#endif
+
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+
+#define __powerpc_sys_ni_syscall sys_ni_syscall
+
+#ifdef CONFIG_PPC64
+#define __SYSCALL(nr, entry)	.8byte __powerpc_##entry
+#else
+#define __SYSCALL(nr, entry)	.long __powerpc_##entry
+#endif
+
+#else
+
+#ifdef CONFIG_PPC64
 #define __SYSCALL(nr, entry)	.8byte entry
 #else
 #define __SYSCALL(nr, entry)	.long entry
 #endif
+
+#endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
 
 #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
 .globl sys_call_table
