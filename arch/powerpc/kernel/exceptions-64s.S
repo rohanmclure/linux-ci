@@ -547,6 +547,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	std	r10,GPR12(r1)
 	std	r11,GPR13(r1)
 	ZERO_GPR(11)
+	/* r12 is [H]SRR1, r13 is PACA so don't clobber */
 
 	SAVE_NVGPRS(r1)
 	ZERO_NVGPRS()
