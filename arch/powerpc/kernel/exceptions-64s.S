@@ -501,6 +501,7 @@ DEFINE_FIXED_SYMBOL(\name\()_common_real, text)
 	std	r12,_MSR(r1)		/* save SRR1 in stackframe	*/
 	std	r10,0(r1)		/* make stack chain pointer	*/
 	std	r0,GPR0(r1)		/* save r0 in stackframe	*/
+	ZERO_GPR(0)
 	std	r10,GPR1(r1)		/* save r1 in stackframe	*/
 
 	/* Mark our [H]SRRs valid for return */
@@ -538,7 +539,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	ld	r10,IAREA+EX_R10(r13)
 	std	r9,GPR9(r1)
 	std	r10,GPR10(r1)
-	/* ZERO_GPRS(9, 10) */
+	ZERO_GPRS(9, 10)
 	ld	r9,IAREA+EX_R11(r13)	/* move r11 - r13 to stackframe	*/
 	ld	r10,IAREA+EX_R12(r13)
 	ld	r11,IAREA+EX_R13(r13)
@@ -582,6 +583,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_CFAR)
 	std	r10,_CTR(r1)
 	std	r2,GPR2(r1)		/* save r2 in stackframe	*/
 	SAVE_GPRS(3, 8, r1)		/* save r3 - r8 in stackframe   */
+	ZERO_GPRS(2, 8)
 	mflr	r9			/* Get LR, later save to stack	*/
 	ld	r2,PACATOC(r13)		/* get kernel TOC into r2	*/
 	std	r9,_LINK(r1)
