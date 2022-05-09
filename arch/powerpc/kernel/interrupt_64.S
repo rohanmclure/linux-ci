@@ -70,7 +70,7 @@ _ASM_NOKPROBE_SYMBOL(system_call_vectored_\name)
 	ld	r2,PACATOC(r13)
 	mfcr	r12
 	li	r11,0
-	/* Can we avoid saving r3-r8 in common case? */
+	/* Save syscall parameters in r3-r8 */
 	std	r3,GPR3(r1)
 	std	r4,GPR4(r1)
 	std	r5,GPR5(r1)
@@ -115,6 +115,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	 * Zero user registers to prevent influencing speculative execution
 	 * state of kernel code.
 	 */
+	ZEROIZE_GPR(0)
 	ZEROIZE_GPRS(5, 12)
 	ZEROIZE_NVGPRS()
 	bl	system_call_exception
@@ -145,6 +146,7 @@ BEGIN_FTR_SECTION
 	HMT_MEDIUM_LOW
 END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 
+	REST_NVGPRS(r1)
 	cmpdi	r3,0
 	bne	.Lsyscall_vectored_\name\()_restore_regs
 
@@ -187,7 +189,6 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	ld	r4,_LINK(r1)
 	ld	r5,_XER(r1)
 
-	REST_NVGPRS(r1)
 	ld	r0,GPR0(r1)
 	mtcr	r2
 	mtctr	r3
@@ -255,7 +256,7 @@ END_BTB_FLUSH_SECTION
 	ld	r2,PACATOC(r13)
 	mfcr	r12
 	li	r11,0
-	/* Can we avoid saving r3-r8 in common case? */
+	/* Save syscall parameters in r3-r8 */
 	std	r3,GPR3(r1)
 	std	r4,GPR4(r1)
 	std	r5,GPR5(r1)
@@ -312,6 +313,7 @@ END_BTB_FLUSH_SECTION
 	 * Zero user registers to prevent influencing speculative execution
 	 * state of kernel code.
 	 */
+	ZEROIZE_GPR(0)
 	ZEROIZE_GPRS(5, 12)
 	ZEROIZE_NVGPRS()
 	bl	system_call_exception
@@ -354,6 +356,7 @@ BEGIN_FTR_SECTION
 	stdcx.	r0,0,r1			/* to clear the reservation */
 END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
+	REST_NVGPRS(r1)
 	cmpdi	r3,0
 	bne	.Lsyscall_restore_regs
 	/* Zero volatile regs that may contain sensitive kernel data */
@@ -389,7 +392,6 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 .Lsyscall_restore_regs:
 	ld	r3,_CTR(r1)
 	ld	r4,_XER(r1)
-	REST_NVGPRS(r1)
 	mtctr	r3
 	mtspr	SPRN_XER,r4
 	ld	r0,GPR0(r1)
