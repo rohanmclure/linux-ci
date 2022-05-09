@@ -108,6 +108,9 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	 * but this is the best we can do.
 	 */
 
+	ZERO_GPRS(5, 12)
+	ZERO_NVGPRS()
+
 	/* Calling convention has r3 = orig r0, r4 = regs */
 	mr	r3,r0
 	bl	system_call_exception
@@ -138,6 +141,7 @@ BEGIN_FTR_SECTION
 	HMT_MEDIUM_LOW
 END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 
+	REST_NVGPRS(r1)
 	cmpdi	r3,0
 	bne	.Lsyscall_vectored_\name\()_restore_regs
 
@@ -180,7 +184,6 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	ld	r4,_LINK(r1)
 	ld	r5,_XER(r1)
 
-	REST_NVGPRS(r1)
 	ld	r0,GPR0(r1)
 	mtcr	r2
 	mtctr	r3
@@ -298,6 +301,9 @@ END_BTB_FLUSH_SECTION
 	wrteei	1
 #endif
 
+	ZERO_GPRS(5, 12)
+	ZERO_NVGPRS()
+
 	/* Calling convention has r3 = orig r0, r4 = regs */
 	mr	r3,r0
 	bl	system_call_exception
@@ -340,6 +346,7 @@ BEGIN_FTR_SECTION
 	stdcx.	r0,0,r1			/* to clear the reservation */
 END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
+	REST_NVGPRS(r1)
 	cmpdi	r3,0
 	bne	.Lsyscall_restore_regs
 	/* Zero volatile regs that may contain sensitive kernel data */
@@ -367,7 +374,6 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 .Lsyscall_restore_regs:
 	ld	r3,_CTR(r1)
 	ld	r4,_XER(r1)
-	REST_NVGPRS(r1)
 	mtctr	r3
 	mtspr	SPRN_XER,r4
 	REST_GPR(0, r1)
@@ -435,7 +441,7 @@ _ASM_NOKPROBE_SYMBOL(interrupt_return_\srr\()_user)
 	bl	interrupt_exit_user_prepare
 	cmpdi	r3,0
 	bne-	.Lrestore_nvgprs_\srr
-.Lrestore_nvgprs_\srr\()_cont:
+	.Lrestore_nvgprs_\srr\()_cont:
 	std	r1,PACA_EXIT_SAVE_R1(r13) /* save r1 for restart */
 #ifdef CONFIG_PPC_BOOK3S
 .Linterrupt_return_\srr\()_user_rst_start:
