@@ -43,6 +43,22 @@
 
 struct rtas_args;
 
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+#include <linux/syscalls.h>
+asmlinkage long sys_ni_syscall(void);
+#ifdef CONFIG_PPC32
+asmlinkage long sys_old_select(struct sel_arg_struct __user *arg);
+asmlinkage long sys_select(int n, fd_set __user *inp, fd_set __user *outp,
+			   fd_set __user *exp,
+			   struct __kernel_old_timeval __user *tvp);
+#endif /* CONFIG_PPC32 */
+
+#ifdef CONFIG_PPC64
+asmlinkage long sys_personality(unsigned int personality);
+#endif /* CONFIG_PPC64 */
+
+#endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
+
 asmlinkage long sys_mmap(unsigned long addr, size_t len,
 			 unsigned long prot, unsigned long flags,
 			 unsigned long fd, off_t offset);

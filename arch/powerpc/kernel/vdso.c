@@ -22,6 +22,7 @@
 #include <vdso/datapage.h>
 
 #include <asm/syscall.h>
+#include <asm/syscalls.h>
 #include <asm/processor.h>
 #include <asm/mmu.h>
 #include <asm/mmu_context.h>
@@ -39,8 +40,6 @@
 
 extern char vdso32_start, vdso32_end;
 extern char vdso64_start, vdso64_end;
-
-asmlinkage long sys_ni_syscall(void);
 
 /*
  * The vdso data page (aka. systemcfg for old ppc64 fans) is here.
