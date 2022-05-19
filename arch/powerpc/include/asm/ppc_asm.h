@@ -33,6 +33,7 @@
 	.endr
 .endm
 
+
 /*
  * Simplification of OP_REGS, for an arbitrary right hand operand.
  *
