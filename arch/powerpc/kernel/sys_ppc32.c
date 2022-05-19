@@ -49,8 +49,8 @@
 #include <asm/switch_to.h>
 
 static inline long do_mmap2(unsigned long addr, size_t len,
-			    unsigned long prot, unsigned long flags,
-			    unsigned long fd, unsigned long off, int shift)
+			unsigned long prot, unsigned long flags,
+			unsigned long fd, unsigned long off, int shift)
 {
 	if (!arch_validate_prot(prot, addr))
 		return -EINVAL;
