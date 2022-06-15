@@ -61,16 +61,6 @@ asmlinkage long sys_ni_syscall(void);
 
 asmlinkage long sys_rtas(struct rtas_args __user *uargs);
 
-#ifdef CONFIG_PPC32
-
-asmlinkage long sys_ppc_select(int n,
-			       fd_set __user *inp,
-			       fd_set __user *outp,
-			       fd_set __user *exp,
-			       struct __kernel_old_timeval __user *tvp);
-
-#endif /* CONFIG_PPC32 */
-
 #ifdef CONFIG_PPC64
 asmlinkage long sys_ppc64_personality(unsigned long personality);
 #endif /* CONFIG_PPC64 */
