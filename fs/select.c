@@ -701,8 +701,8 @@ out_nofds:
 	return ret;
 }
 
-static int kern_select(int n, fd_set __user *inp, fd_set __user *outp,
-		       fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
+int kern_select(int n, fd_set __user *inp, fd_set __user *outp,
+		fd_set __user *exp, struct __kernel_old_timeval __user *tvp)
 {
 	struct timespec64 end_time, *to = NULL;
 	struct __kernel_old_timeval tv;

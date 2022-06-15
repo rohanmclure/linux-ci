@@ -16,6 +16,21 @@
 
 #ifdef CONFIG_PPC64
 	.p2align	3
+#endif
+
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+
+#define __powerpc_sys_ni_syscall sys_ni_syscall
+
+#ifdef CONFIG_PPC64
+#define __SYSCALL(nr, entry)	.8byte __powerpc_##entry
+#else
+#define __SYSCALL(nr, entry)	.long __powerpc_##entry
+#endif
+
+#else
+
+#ifdef CONFIG_PPC64
 #define __SYSCALL(nr, entry)	.8byte entry
 #else
 #define __SYSCALL(nr, entry)	.long entry
@@ -32,9 +47,11 @@ sys_call_table:
 
 #ifdef CONFIG_COMPAT
 #undef __SYSCALL_WITH_COMPAT
-#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
+#define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, compat)
 .globl compat_sys_call_table
 compat_sys_call_table:
 #define compat_sys_sigsuspend	sys_sigsuspend
 #include <asm/syscall_table_32.h>
 #endif
+
+#endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
