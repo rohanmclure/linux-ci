@@ -90,6 +90,7 @@ COMPAT_SYSCALL_DEFINE1(ppc64_personality, unsigned long, personality)
 }
 #endif
 
+#if defined(CONFIG_PPC32) || defined(CONFIG_SPU_BASE) || defined(CONFIG_COMPAT)
 SYSCALL_DEFINE6(ppc_fadvise64_64,
 		int, fd, int, advice, u32, offset_high, u32, offset_low,
  	       	u32, len_high, u32, len_low)
@@ -97,6 +98,7 @@ SYSCALL_DEFINE6(ppc_fadvise64_64,
 	return ksys_fadvise64_64(fd, (u64)offset_high << 32 | offset_low,
 				 (u64)len_high << 32 | len_low, advice);
 }
+#endif 
 
 SYSCALL_DEFINE0(switch_endian)
 {

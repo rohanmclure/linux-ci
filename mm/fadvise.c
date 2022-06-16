@@ -8,6 +8,7 @@
  *		Initial version.
  */
 
+#include <linux/compat.h>
 #include <linux/kernel.h>
 #include <linux/file.h>
 #include <linux/fs.h>
@@ -212,6 +213,26 @@ SYSCALL_DEFINE4(fadvise64_64, int, fd, loff_t, offset, loff_t, len, int, advice)
 SYSCALL_DEFINE4(fadvise64, int, fd, loff_t, offset, size_t, len, int, advice)
 {
 	return ksys_fadvise64_64(fd, offset, len, advice);
+}
+
+#endif
+
+#if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_FADVISE64)
+
+COMPAT_SYSCALL_DEFINE5(fadvise64, int, fd, 
+		       compat_arg_u64_dual(offset),
+		       size_t, len, int, advice)
+{
+	return ksys_fadvise64_64(fd, compat_arg_u64_glue(offset),
+				 len, advice);
+}
+
+COMPAT_SYSCALL_DEFINE6(fadvise64_padded, int, fd, u32, __pad, 
+		       compat_arg_u64_dual(offset),
+		       size_t, len, int, advice)
+{
+	return ksys_fadvise64_64(fd, compat_arg_u64_glue(offset),
+				 len, advice);
 }
 
 #endif

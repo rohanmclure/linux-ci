@@ -10,6 +10,7 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/kernel.h>
+#include <linux/compat.h>
 #include <linux/slab.h>
 #include <linux/backing-dev.h>
 #include <linux/mm.h>
@@ -1667,6 +1668,22 @@ SYSCALL_DEFINE1(old_mmap, struct mmap_arg_struct __user *, arg)
 			       a.offset >> PAGE_SHIFT);
 }
 #endif /* __ARCH_WANT_SYS_OLD_MMAP */
+
+#if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_MMAP2)
+COMPAT_SYSCALL_DEFINE6(mmap2,
+		       unsigned long, addr, size_t, len,
+		       unsigned long, prot, unsigned long, flags,
+		       unsigned long, fd, unsigned long, pgoff)
+{
+	if (!arch_validate_prot(prot, addr))
+		return -EINVAL;
+
+	if (!IS_ALIGNED(pgoff << 12, 1 << (PAGE_SHIFT-12)))
+		return -EINVAL;
+
+	return ksys_mmap_pgoff(addr, len, prot, flags, fd, pgoff >> PAGE_SHIFT);
+}
+#endif
 
 /*
  * Some shared mappings will want the pages marked read-only

@@ -688,6 +688,11 @@ COMPAT_SYSCALL_DEFINE5(pread64, unsigned int, fd, char __user *, buf,
 {
 	return ksys_pread64(fd, buf, count, compat_arg_u64_glue(pos));
 }
+COMPAT_SYSCALL_DEFINE6(pread64_padded, unsigned int, fd, char __user *, buf,
+		       size_t, count, u32, __pad, compat_arg_u64_dual(pos))
+{
+	return ksys_pread64(fd, buf, count, compat_arg_u64_glue(pos));
+}
 #endif
 
 ssize_t ksys_pwrite64(unsigned int fd, const char __user *buf,
@@ -719,6 +724,12 @@ SYSCALL_DEFINE4(pwrite64, unsigned int, fd, const char __user *, buf,
 #if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_PWRITE64)
 COMPAT_SYSCALL_DEFINE5(pwrite64, unsigned int, fd, const char __user *, buf,
 		       size_t, count, compat_arg_u64_dual(pos))
+{
+	return ksys_pwrite64(fd, buf, count, compat_arg_u64_glue(pos));
+}
+COMPAT_SYSCALL_DEFINE6(pwrite64_padded, unsigned int, fd,
+		       const char __user *, buf, size_t, count,
+		       u32, __pad, compat_arg_u64_dual(pos))
 {
 	return ksys_pwrite64(fd, buf, count, compat_arg_u64_glue(pos));
 }

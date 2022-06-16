@@ -230,11 +230,21 @@ COMPAT_SYSCALL_DEFINE3(truncate64, const char __user *, pathname,
 {
 	return ksys_truncate(pathname, compat_arg_u64_glue(length));
 }
+COMPAT_SYSCALL_DEFINE4(truncate64_padded, const char __user *, pathname,
+		       u32, __pad, compat_arg_u64_dual(length))
+{
+	return ksys_truncate(pathname, compat_arg_u64_glue(length));
+}
 #endif
 
 #if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_FTRUNCATE64)
 COMPAT_SYSCALL_DEFINE3(ftruncate64, unsigned int, fd,
 		       compat_arg_u64_dual(length))
+{
+	return ksys_ftruncate(fd, compat_arg_u64_glue(length));
+}
+COMPAT_SYSCALL_DEFINE4(ftruncate64_padded, unsigned int, fd,
+		       u32, __pad, compat_arg_u64_dual(length))
 {
 	return ksys_ftruncate(fd, compat_arg_u64_glue(length));
 }

@@ -929,10 +929,14 @@ asmlinkage long compat_sys_socketcall(int call, u32 __user *args);
 
 #ifdef __ARCH_WANT_COMPAT_TRUNCATE64
 asmlinkage long compat_sys_truncate64(const char __user *pathname, compat_arg_u64(len));
+asmlinkage long compat_sys_truncate64_padded(const char __user *pathname,
+					     u32 __pad, compat_arg_u64(len));
 #endif
 
 #ifdef __ARCH_WANT_COMPAT_FTRUNCATE64
 asmlinkage long compat_sys_ftruncate64(unsigned int fd, compat_arg_u64(len));
+asmlinkage long compat_sys_ftruncate64_padded(unsigned int fd, u32 __pad,
+					      compat_arg_u64(len));
 #endif
 
 #ifdef __ARCH_WANT_COMPAT_FALLOCATE
@@ -943,16 +947,32 @@ asmlinkage long compat_sys_fallocate(int fd, int mode, compat_arg_u64(offset),
 #ifdef __ARCH_WANT_COMPAT_PREAD64
 asmlinkage long compat_sys_pread64(unsigned int fd, char __user *buf, size_t count,
 				   compat_arg_u64(pos));
+asmlinkage long compat_sys_pread64_padded(unsigned int fd, char __user *buf, size_t count,
+					  u32 __pad, compat_arg_u64(pos));
 #endif
 
 #ifdef __ARCH_WANT_COMPAT_PWRITE64
 asmlinkage long compat_sys_pwrite64(unsigned int fd, const char __user *buf, size_t count,
 				    compat_arg_u64(pos));
+asmlinkage long compat_sys_pwrite64_padded(unsigned int fd, const char __user *buf,
+					   size_t count, u32 __pad, compat_arg_u64(pos));
 #endif
 
 #ifdef __ARCH_WANT_COMPAT_SYNC_FILE_RANGE
 asmlinkage long compat_sys_sync_file_range(int fd, compat_arg_u64(pos),
 					   compat_arg_u64(nbytes), unsigned int flags);
+#endif
+
+#ifdef __ARCH_WANT_COMPAT_SYNC_FILE_RANGE2
+asmlinkage long compat_sys_sync_file_range2(int fd, unsigned int flags,
+					    compat_arg_u64(offset), compat_arg_u64(nbytes));
+#endif
+
+#ifdef __ARCH_WANT_COMPAT_FADVISE64
+asmlinkage long compat_sys_fadvise64(int fd, compat_arg_u64(offset),
+				     size_t len, int advice);
+asmlinkage long compat_sys_fadvise64_padded(int fd, u32 __padded, compat_arg_u64(offset),
+					    size_t len, int advice);
 #endif
 
 #ifdef __ARCH_WANT_COMPAT_FADVISE64_64
@@ -962,6 +982,8 @@ asmlinkage long compat_sys_fadvise64_64(int fd, compat_arg_u64(pos),
 
 #ifdef __ARCH_WANT_COMPAT_READAHEAD
 asmlinkage long compat_sys_readahead(int fd, compat_arg_u64(offset), size_t count);
+asmlinkage long compat_sys_readahead_padded(int fd, u32 __pad,
+					    compat_arg_u64(offset), size_t count);
 #endif
 
 #endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */

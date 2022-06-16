@@ -4,6 +4,7 @@
  */
 
 #include <linux/blkdev.h>
+#include <linux/compat.h>
 #include <linux/kernel.h>
 #include <linux/file.h>
 #include <linux/fs.h>
@@ -389,3 +390,12 @@ SYSCALL_DEFINE4(sync_file_range2, int, fd, unsigned int, flags,
 {
 	return ksys_sync_file_range(fd, offset, nbytes, flags);
 }
+
+#if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_SYNC_FILE_RANGE2)
+COMPAT_SYSCALL_DEFINE6(sync_file_range2, int, fd, unsigned int, flags,
+		       compat_arg_u64_dual(offset), compat_arg_u64_dual(nbytes))
+{
+	return ksys_sync_file_range(fd, compat_arg_u64_glue(offset),
+				    compat_arg_u64_glue(nbytes), flags);
+}
+#endif

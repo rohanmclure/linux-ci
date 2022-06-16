@@ -114,6 +114,7 @@
  */
 
 #include <linux/blkdev.h>
+#include <linux/compat.h>
 #include <linux/kernel.h>
 #include <linux/dax.h>
 #include <linux/gfp.h>
@@ -751,6 +752,11 @@ SYSCALL_DEFINE3(readahead, int, fd, loff_t, offset, size_t, count)
 
 #if defined(CONFIG_COMPAT) && defined(__ARCH_WANT_COMPAT_READAHEAD)
 COMPAT_SYSCALL_DEFINE4(readahead, int, fd, compat_arg_u64_dual(offset), size_t, count)
+{
+	return ksys_readahead(fd, compat_arg_u64_glue(offset), count);
+}
+COMPAT_SYSCALL_DEFINE5(readahead_padded, int, fd, u32, __pad,
+		       compat_arg_u64_dual(offset), size_t, count)
 {
 	return ksys_readahead(fd, compat_arg_u64_glue(offset), count);
 }
