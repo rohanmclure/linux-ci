@@ -10,6 +10,7 @@
 #include <linux/syscalls.h>
 
 #include <asm/spu.h>
+#include <asm/syscall.h>
 #include <asm/syscalls.h>
 #include <asm/unistd.h>
 
@@ -34,9 +35,9 @@
  *	mbind, mq_open, ipc, ...
  */
 
-static void *spu_syscall_table[] = {
+static const syscall_fn spu_syscall_table[] = {
 #define __SYSCALL_WITH_COMPAT(nr, entry, compat) __SYSCALL(nr, entry)
-#define __SYSCALL(nr, entry) [nr] = entry,
+#define __SYSCALL(nr, entry) [nr] = (void *) entry,
 #include <asm/syscall_table_spu.h>
 };
 
@@ -49,7 +50,7 @@ long spu_sys_callback(struct spu_syscall_block *s)
 		return -ENOSYS;
 	}
 
-	syscall = spu_syscall_table[s->nr_ret];
+	syscall = (long (*)(u64, u64, u64, u64, u64, u64)) spu_syscall_table[s->nr_ret];
 
 	pr_debug("SPU-syscall "
 		 "%pSR:syscall%lld(%llx, %llx, %llx, %llx, %llx, %llx)\n",
