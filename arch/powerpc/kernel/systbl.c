@@ -13,12 +13,12 @@
 #include <linux/syscalls.h>
 #include <linux/compat.h>
 #include <asm/unistd.h>
-#include <asm/syscall.h>
+#include <asm/syscalls.h>
 
 #define __SYSCALL_WITH_COMPAT(nr, entry, compat) __SYSCALL(nr, entry)
-#define __SYSCALL(nr, entry) [nr] = (unsigned long) &entry,
+#define __SYSCALL(nr, entry) [nr] = (void *) entry,
 
-const unsigned long sys_call_table[] = {
+const syscall_fn sys_call_table[] = {
 #ifdef CONFIG_PPC64
 #include <asm/syscall_table_64.h>
 #else
@@ -29,7 +29,7 @@ const unsigned long sys_call_table[] = {
 #ifdef CONFIG_COMPAT
 #undef __SYSCALL_WITH_COMPAT
 #define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
-const unsigned long compat_sys_call_table[] = {
+const syscall_fn compat_sys_call_table[] = {
 #include <asm/syscall_table_32.h>
 };
 #endif /* CONFIG_COMPAT */
