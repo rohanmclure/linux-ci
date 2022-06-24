@@ -89,14 +89,6 @@ COMPAT_SYSCALL_DEFINE4(ppc_truncate64,
 	return ksys_truncate(path, merge_64(len1, len2));
 }
 
-COMPAT_SYSCALL_DEFINE6(ppc_fallocate,
-		       int, fd, int, mode, u32, offset1, u32, offset2,
-		       u32, len1, u32, len2)
-{
-	return ksys_fallocate(fd, mode, ((loff_t)offset1 << 32) | offset2,
-			     merge_64(len1, len2));
-}
-
 COMPAT_SYSCALL_DEFINE4(ppc_ftruncate64,
 		       unsigned int, fd, u32, reg4, unsigned long, len1,
 		       unsigned long, len2)
