@@ -1413,13 +1413,7 @@ static inline int pgd_devmap(pgd_t pgd)
 
 static inline int pud_pfn(pud_t pud)
 {
-	/*
-	 * Currently all calls to pud_pfn() are gated around a pud_devmap()
-	 * check so this should never be used. If it grows another user we
-	 * want to know about it.
-	 */
-	BUILD_BUG();
-	return 0;
+	return pte_pfn(pud_pte(pud));
 }
 #define __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION
 pte_t ptep_modify_prot_start(struct vm_area_struct *, unsigned long, pte_t *);
