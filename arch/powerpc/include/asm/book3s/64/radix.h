@@ -196,6 +196,7 @@ static inline pte_t radix__ptep_get_and_clear_full(struct mm_struct *mm,
 	} else
 		old_pte = radix__pte_update(mm, addr, ptep, ~0ul, 0, 0);
 
+	page_table_check_pte_clear(mm, addr, __pte(old_pte));
 	return __pte(old_pte);
 }
 

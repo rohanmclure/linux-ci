@@ -8,6 +8,7 @@
 #include <linux/mmdebug.h>
 #include <linux/bug.h>
 #include <linux/sizes.h>
+#include <linux/page_table_check.h>
 #endif
 
 /*
@@ -483,6 +484,7 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
 				       unsigned long addr, pte_t *ptep)
 {
 	unsigned long old = pte_update(mm, addr, ptep, ~0UL, 0, 0);
+	page_table_check_pte_clear(mm, addr, __pte(old));
 	return __pte(old);
 }
 
@@ -864,7 +866,7 @@ static inline int pte_none(pte_t pte)
 static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
 				pte_t *ptep, pte_t pte, int percpu)
 {
-
+	page_table_check_pte_set(mm, addr, ptep, pte);
 	VM_WARN_ON(!(pte_raw(pte) & cpu_to_be64(_PAGE_PTE)));
 	/*
 	 * Keep the _PAGE_PTE added till we are sure we handle _PAGE_PTE
