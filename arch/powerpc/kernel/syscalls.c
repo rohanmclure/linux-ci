@@ -87,14 +87,23 @@ static inline long do_ppc64_personality(unsigned long personality)
 		ret = (ret & ~PER_MASK) | PER_LINUX;
 	return ret;
 }
-long ppc64_personality(unsigned long personality)
+
+SYSCALL_DEFINE1(ppc64_personality, unsigned long, personality)
 {
 	return do_ppc64_personality(personality);
 }
-#endif
 
-long ppc_fadvise64_64(int fd, int advice, u32 offset_high, u32 offset_low,
-		      u32 len_high, u32 len_low)
+#ifdef CONFIG_COMPAT
+COMPAT_SYSCALL_DEFINE1(ppc64_personality, unsigned long, personality)
+{
+	return do_ppc64_personality(personality);
+}
+#endif /* CONFIG_COMPAT */
+#endif /* CONFIG_PPC64 */
+
+SYSCALL_DEFINE6(ppc_fadvise64_64,
+		int, fd, int, advice, u32, offset_high, u32, offset_low,
+		u32, len_high, u32, len_low)
 {
 	return ksys_fadvise64_64(fd, (u64)offset_high << 32 | offset_low,
 				 (u64)len_high << 32 | len_low, advice);
