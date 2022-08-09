@@ -64,7 +64,7 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, size_t, len,
 }
 
 #ifdef CONFIG_PPC64
-long ppc64_personality(unsigned long personality)
+static inline long do_ppc64_personality(unsigned long personality)
 {
 	long ret;
 
@@ -75,6 +75,10 @@ long ppc64_personality(unsigned long personality)
 	if (personality(ret) == PER_LINUX32)
 		ret = (ret & ~PER_MASK) | PER_LINUX;
 	return ret;
+}
+long ppc64_personality(unsigned long personality)
+{
+	return do_ppc64_personality(personality);
 }
 #endif
 
