@@ -15,6 +15,12 @@
 #include <asm/unistd.h>
 #include <asm/ucontext.h>
 
+#ifndef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+long sys_ni_syscall(void);
+#else
+long sys_ni_syscall(const struct pt_regs *regs);
+#endif
+
 struct rtas_args;
 
 #ifndef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
@@ -24,7 +30,6 @@ struct rtas_args;
  */
 
 long sys_rtas(struct rtas_args __user *uargs);
-long sys_ni_syscall(void);
 
 #ifdef CONFIG_PPC64
 long sys_ppc64_personality(unsigned long personality);
@@ -91,6 +96,24 @@ long compat_sys_ppc_sync_file_range2(int fd, unsigned int flags,
 				     unsigned int offset2,
 				     unsigned int nbytes1,
 				     unsigned int nbytes2);
+#endif /* CONFIG_COMPAT */
+
+#else
+
+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
+#define __SYSCALL(nr, entry) \
+	long __powerpc_##entry(const struct pt_regs *regs);
+
+#ifdef CONFIG_PPC64
+#include <asm/syscall_table_64.h>
+#else
+#include <asm/syscall_table_32.h>
+#endif /* CONFIG_PPC64 */
+
+#ifdef CONFIG_COMPAT
+#undef __SYSCALL_WITH_COMPAT
+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
+#include <asm/syscall_table_32.h>
 #endif /* CONFIG_COMPAT */
 
 #endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
