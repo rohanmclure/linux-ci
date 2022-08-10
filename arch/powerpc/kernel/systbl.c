@@ -15,8 +15,16 @@
 #include <asm/unistd.h>
 #include <asm/syscalls.h>
 
+#undef __SYSCALL_WITH_COMPAT
 #define __SYSCALL_WITH_COMPAT(nr, entry, compat) __SYSCALL(nr, entry)
+
+#undef __SYSCALL
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+#define __SYSCALL(nr, entry) [nr] = __powerpc_##entry,
+#define __powerpc_sys_ni_syscall	sys_ni_syscall
+#else
 #define __SYSCALL(nr, entry) [nr] = (void *) entry,
+#endif
 
 const syscall_fn sys_call_table[] = {
 #ifdef CONFIG_PPC64
