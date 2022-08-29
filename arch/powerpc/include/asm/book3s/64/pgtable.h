@@ -872,6 +872,7 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
 	 * in all the callers.
 	 */
 	pte = __pte_raw(pte_raw(pte) | cpu_to_be64(_PAGE_PTE));
+	page_table_check_pte_set(mm, addr, ptep, pte);
 
 	if (radix_enabled())
 		return radix__set_pte_at(mm, addr, ptep, pte, percpu);
