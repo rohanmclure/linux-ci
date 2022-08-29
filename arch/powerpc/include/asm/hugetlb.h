@@ -39,7 +39,9 @@ void hugetlb_free_pgd_range(struct mmu_gather *tlb, unsigned long addr,
 static inline pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
 					    unsigned long addr, pte_t *ptep)
 {
-	return __pte(pte_update(mm, addr, ptep, ~0UL, 0, 1));
+	unsigned int old_pte = pte_update(mm, addr, ptep, ~0UL, 0, 1);
+	page_table_check_pte_clear(mm, addr, __pte(old_pte));
+	return __pte(old_pte);
 }
 
 #define __HAVE_ARCH_HUGE_PTEP_CLEAR_FLUSH

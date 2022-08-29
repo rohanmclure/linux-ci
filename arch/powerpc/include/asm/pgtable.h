@@ -21,6 +21,7 @@ struct mm_struct;
 #endif /* !CONFIG_PPC_BOOK3S */
 
 #ifndef __ASSEMBLY__
+#include <linux/page_table_check.h>
 
 #ifndef MAX_PTRS_PER_PGD
 #define MAX_PTRS_PER_PGD PTRS_PER_PGD

@@ -37,6 +37,7 @@
 #define HAVE_PAGE_AGP
 
 #ifndef __ASSEMBLY__
+#include <linux/page_table_check.h>
 
 /* Generic accessors to PTE bits */
 #ifndef pte_write
@@ -190,6 +191,7 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
 	 * with a barrier in between.
 	 * In the percpu case, we also fallback to the simple update
 	 */
+	page_table_check_pte_set(mm,  addr, ptep, pte);
 	if (IS_ENABLED(CONFIG_PPC32) && IS_ENABLED(CONFIG_PTE_64BIT) && !percpu) {
 		__asm__ __volatile__("\
 			stw%X0 %2,%0\n\
