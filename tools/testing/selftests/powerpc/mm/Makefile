@@ -5,7 +5,7 @@ noarg:
 TEST_GEN_PROGS := hugetlb_vs_thp_test subpage_prot prot_sao segv_errors wild_bctr \
 		  large_vm_fork_separation bad_accesses pkey_exec_prot \
 		  pkey_siginfo stack_expansion_signal stack_expansion_ldst \
-		  large_vm_gpr_corruption
+		  large_vm_gpr_corruption page_table_checks
 TEST_PROGS := stress_code_patching.sh
 
 TEST_GEN_PROGS_EXTENDED := tlbie_test

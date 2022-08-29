@@ -213,6 +213,7 @@ static inline int radix__pte_none(pte_t pte)
 static inline void radix__set_pte_at(struct mm_struct *mm, unsigned long addr,
 				 pte_t *ptep, pte_t pte, int percpu)
 {
+	page_table_check_pte_set(mm, addr, ptep, pte);
 	*ptep = pte;
 
 	/*
