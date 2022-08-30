@@ -354,6 +354,7 @@ static inline int pte_young(pte_t pte)
 #endif
 
 #define pmd_page(pmd)		pfn_to_page(pmd_pfn(pmd))
+#define pmd_user(pmd)		0
 /*
  * Encode and decode a swap entry.
  * Note that the bits we use in a PTE for representing a swap entry
