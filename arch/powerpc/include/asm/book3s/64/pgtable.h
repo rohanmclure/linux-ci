@@ -1418,7 +1418,7 @@ static inline int pud_pfn(pud_t pud)
 	 * check so this should never be used. If it grows another user we
 	 * want to know about it.
 	 */
-	BUILD_BUG();
+	BUG();
 	return 0;
 }
 #define __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION
