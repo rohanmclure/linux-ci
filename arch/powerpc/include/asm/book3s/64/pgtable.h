@@ -1415,10 +1415,15 @@ static inline int pud_pfn(pud_t pud)
 {
 	/*
 	 * Currently all calls to pud_pfn() are gated around a pud_devmap()
-	 * check so this should never be used. If it grows another user we
-	 * want to know about it.
+	 * check so this should never be used. Helpers provided by
+	 * page-table-checks do however make reference to this, but should never
+	 * call it.
 	 */
+#ifdef CONFIG_PAGE_TABLE_CHECK
+	BUG();
+#else
 	BUILD_BUG();
+#endif
 	return 0;
 }
 #define __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION
