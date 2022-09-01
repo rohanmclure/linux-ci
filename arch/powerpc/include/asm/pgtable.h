@@ -158,27 +158,52 @@ struct seq_file;
 void arch_report_meminfo(struct seq_file *m);
 #endif /* CONFIG_PPC64 */
 
-#ifdef ARCH_SUPPORTS_PAGE_TABLE_CHECK
-#define pte_user_accessible_page pte_user_accessible_page
+#ifdef CONFIG_PAGE_TABLE_CHECK
+
+#ifndef pud_pfn
+static inline int pud_pfn(pud_t pud)
+{
+	BUG();
+	return 0;
+}
+#endif
+
 static inline bool pte_user_accessible_page(pte_t pte)
 {
 	return (pte_val(pte) & _PAGE_PRESENT) && pte_user(pte);
 }
 
-#define pmd_user_accessible_page pmd_user_accessible_page
+#ifdef CONFIG_PPC64
+
 static inline bool pmd_user_accessible_page(pmd_t pmd)
 {
 	return pmd_is_leaf(pmd) && pmd_present(pmd)
 				&& pte_user(pmd_pte(pmd));
 }
 
-#define pud_user_accessible_page pud_user_accessible_page
 static inline bool pud_user_accessible_page(pud_t pud)
 {
 	return pud_is_leaf(pud) && pud_present(pud)
 				&& pte_user(pud_pte(pud));
 }
-#endif /* ARCH_SUPPORTS_PAGE_TABLE_CHECK */
+
+#else
+
+static inline bool pmd_user_accessible_page(pmd_t pmd)
+{
+	BUG();
+	return false;
+}
+
+static inline bool pud_user_accessible_page(pud_t pud)
+{
+	BUG();
+	return false;
+}
+
+#endif /* CONFIG_PPC64 */
+
+#endif /* CONFIG_PAGE_TABLE_CHECK */
 
 #endif /* __ASSEMBLY__ */
 
