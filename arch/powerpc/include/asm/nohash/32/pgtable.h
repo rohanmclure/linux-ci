@@ -305,7 +305,9 @@ static inline int __ptep_test_and_clear_young(struct mm_struct *mm,
 static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
 				       pte_t *ptep)
 {
-	return __pte(pte_update(mm, addr, ptep, ~0, 0, 0));
+	unsigned long old = pte_update(mm, addr, ptep, ~0, 0, 0);
+	page_table_check_pte_clear(mm, addr, __pte(old));
+	return __pte(old);
 }
 
 #define __HAVE_ARCH_PTEP_SET_WRPROTECT

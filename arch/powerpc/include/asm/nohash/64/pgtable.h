@@ -244,6 +244,7 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
 				       unsigned long addr, pte_t *ptep)
 {
 	unsigned long old = pte_update(mm, addr, ptep, ~0UL, 0, 0);
+	page_table_check_pte_clear(mm, addr, __pte(old));
 	return __pte(old);
 }
 
