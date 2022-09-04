@@ -635,17 +635,6 @@ static inline pgprot_t pgprot_writecombine(pgprot_t prot)
 	return pgprot_noncached_wc(prot);
 }
 
-#define pte_user_accessible_page(pte)					\
-	(pte_val(pte) & _PAGE_PRESENT) && (pte_val(pte) & _PAGE_USER);
-
-#define pmd_user_accessible_page(pmd)					\
-	pmd_is_leaf(pmd) && (pmd_val(pmd) & _PAGE_PRESENT)		\
-			 && (pmd_val(pmd) & _PAGE_USER);
-
-#define pud_user_accessible_page(pud)					\
-	pud_is_leaf(pud) && (pud_val(pud) & _PAGE_PRESENT)		\
-			 && (pud_val(pud) & _PAGE_USER)
-
 #endif /* !__ASSEMBLY__ */
 
 #endif /*  _ASM_POWERPC_BOOK3S_32_PGTABLE_H */
