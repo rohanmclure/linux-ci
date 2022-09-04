@@ -299,5 +299,25 @@ static inline
 void update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *ptep) {}
 #endif
 
+#define pte_user_accessible_page pte_user_accessible_page
+static inline bool pte_user_accessible_page(pte_t pte)
+{
+	return (pte_val(pte) & _PAGE_PRESENT) && (pte_val(pte) & _PAGE_USER);
+}
+
+#define pmd_user_accessible_page pmd_user_accessible_page
+static inline bool pmd_user_accessible_page(pmd_t pmd)
+{
+	return pmd_is_leaf(pmd) && (pmd_val(pmd) & _PAGE_PRESENT)
+				&& (pmd_val(pmd) & _PAGE_USER);
+}
+
+#define pud_user_accessible_page pud_user_accessible_page
+static inline bool pud_user_accessible_page(pud_t pud)
+{
+	return pud_is_leaf(pud) && (pud_val(pud) & _PAGE_PRESENT)
+				&& (pud_val(pud) & _PAGE_USER);
+}
+
 #endif /* __ASSEMBLY__ */
 #endif
