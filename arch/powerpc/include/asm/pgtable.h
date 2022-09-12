@@ -40,6 +40,7 @@ struct mm_struct;
 #define HAVE_PAGE_AGP
 
 #ifndef __ASSEMBLY__
+#include <linux/page_table_check.h>
 
 #ifndef MAX_PTRS_PER_PGD
 #define MAX_PTRS_PER_PGD PTRS_PER_PGD
@@ -48,7 +49,7 @@ struct mm_struct;
 /* Keep these as a macros to avoid include dependency mess */
 #define pte_page(x)		pfn_to_page(pte_pfn(x))
 #define mk_pte(page, pgprot)	pfn_pte(page_to_pfn(page), (pgprot))
-#define set_pte_at  		set_pte
+
 /*
  * Select all bits except the pfn
  */
@@ -149,6 +150,13 @@ static inline bool is_ioremap_addr(const void *x)
 	return addr >= IOREMAP_BASE && addr < IOREMAP_END;
 }
 #endif /* CONFIG_PPC64 */
+
+static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+			      pte_t *ptep, pte_t pte)
+{
+	page_table_check_pte_set(mm, addr, ptep, pte);
+	set_pte(mm, addr, ptep, pte);
+}
 
 /*
  * Currently only consumed by page_table_check_pud_{set,clear}. Since clears
