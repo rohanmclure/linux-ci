@@ -110,7 +110,7 @@ static int early_map_kernel_page(unsigned long ea, unsigned long pa,
 	ptep = pte_offset_kernel(pmdp, ea);
 
 set_the_pte:
-	set_pte_at(&init_mm, ea, ptep, pfn_pte(pfn, flags));
+	set_pte(&init_mm, ea, ptep, pfn_pte(pfn, flags));
 	asm volatile("ptesync": : :"memory");
 	return 0;
 }
@@ -170,7 +170,7 @@ static int __map_kernel_page(unsigned long ea, unsigned long pa,
 		return -ENOMEM;
 
 set_the_pte:
-	set_pte_at(&init_mm, ea, ptep, pfn_pte(pfn, flags));
+	set_pte(&init_mm, ea, ptep, pfn_pte(pfn, flags));
 	asm volatile("ptesync": : :"memory");
 	return 0;
 }
@@ -1094,7 +1094,7 @@ void radix__ptep_modify_prot_commit(struct vm_area_struct *vma,
 	    (atomic_read(&mm->context.copros) > 0))
 		radix__flush_tlb_page(vma, addr);
 
-	set_pte_at(mm, addr, ptep, pte);
+	set_pte(mm, addr, ptep, pte);
 }
 
 int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
@@ -1105,7 +1105,7 @@ int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
 	if (!radix_enabled())
 		return 0;
 
-	set_pte_at(&init_mm, 0 /* radix unused */, ptep, new_pud);
+	set_pte(&init_mm, 0 /* radix unused */, ptep, new_pud);
 
 	return 1;
 }
@@ -1152,7 +1152,7 @@ int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot)
 	if (!radix_enabled())
 		return 0;
 
-	set_pte_at(&init_mm, 0 /* radix unused */, ptep, new_pmd);
+	set_pte(&init_mm, 0 /* radix unused */, ptep, new_pmd);
 
 	return 1;
 }
