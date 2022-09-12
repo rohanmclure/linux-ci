@@ -48,7 +48,16 @@ struct mm_struct;
 /* Keep these as a macros to avoid include dependency mess */
 #define pte_page(x)		pfn_to_page(pte_pfn(x))
 #define mk_pte(page, pgprot)	pfn_pte(page_to_pfn(page), (pgprot))
-#define set_pte_at  		set_pte
+#define set_pte_at(mm, addr, ptep, pte)				\
+({								\
+	struct mm_struct *_mm = (mm);				\
+	unsigned long _addr = (addr);				\
+	pte_t *_ptep = (ptep), _pte = (pte);			\
+								\
+	page_table_check_pte_set(_mm, _addr, _ptep, _pte);	\
+	set_pte(_mm, _addr, _ptep, _pte);			\
+})
+
 /*
  * Select all bits except the pfn
  */
