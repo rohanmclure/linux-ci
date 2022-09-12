@@ -139,6 +139,24 @@ static inline bool p4d_is_leaf(p4d_t p4d)
 }
 #endif
 
+#ifndef pmd_pfn
+#define pmd_pfn pmd_pfn
+static inline bool pmd_pfn(pmd_t pmd)
+{
+	WARN(1, "pmd: platform does not support pmd mappings");
+	return pte_pfn(pud_pte(pud));
+}
+#endif
+
+#ifndef pud_pfn
+#define pud_pfn pud_pfn
+static inline bool pud_pfn(pud_t pud)
+{
+	WARN(1, "pud: platform does not support pud mappings");
+	return pte_pfn(pud_pte(pud));
+}
+#endif
+
 #define pmd_pgtable pmd_pgtable
 static inline pgtable_t pmd_pgtable(pmd_t pmd)
 {
