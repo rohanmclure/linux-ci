@@ -153,7 +153,12 @@ notrace long system_call_exception(struct pt_regs *regs, unsigned long r0)
 		f = (void *)sys_call_table[r0];
 	}
 
-	ret = f(r3, r4, r5, r6, r7, r8);
+#ifdef CONFIG_ARCH_HAS_SYSCALL_WRAPPER
+	ret = f(regs);
+#else
+	ret = f(regs->gpr[3], regs->gpr[4], regs->gpr[5],
+		regs->gpr[6], regs->gpr[7], regs->gpr[8]);
+#endif
 
 	/*
 	 * Ultimately, this value will get limited by KSTACK_OFFSET_MAX(),
