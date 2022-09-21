@@ -159,14 +159,6 @@ notrace long system_call_exception(long r3, long r4, long r5,
 
 	if (unlikely(is_compat_task())) {
 		f = (void *)compat_sys_call_table[r0];
-
-		r3 &= 0x00000000ffffffffULL;
-		r4 &= 0x00000000ffffffffULL;
-		r5 &= 0x00000000ffffffffULL;
-		r6 &= 0x00000000ffffffffULL;
-		r7 &= 0x00000000ffffffffULL;
-		r8 &= 0x00000000ffffffffULL;
-
 	} else {
 		f = (void *)sys_call_table[r0];
 	}
