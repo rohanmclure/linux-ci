@@ -68,6 +68,7 @@
 
 #include <linux/context_tracking.h>
 #include <linux/hardirq.h>
+#include <linux/randomize_kstack.h>
 #include <asm/cputime.h>
 #include <asm/firmware.h>
 #include <asm/ftrace.h>
@@ -448,9 +449,12 @@ interrupt_handler long func(struct pt_regs *regs)			\
 {									\
 	long ret;							\
 									\
+	add_random_kstack_offset();					\
 	__hard_RI_enable();						\
 									\
 	ret = ____##func (regs);					\
+									\
+	choose_random_kstack_offset(mftb());				\
 									\
 	return ret;							\
 }									\
@@ -480,11 +484,13 @@ static __always_inline void ____##func(struct pt_regs *regs);		\
 									\
 interrupt_handler void func(struct pt_regs *regs)			\
 {									\
+	add_random_kstack_offset();					\
 	interrupt_enter_prepare(regs);					\
 									\
 	____##func (regs);						\
 									\
 	interrupt_exit_prepare(regs);					\
+	choose_random_kstack_offset(mftb());				\
 }									\
 NOKPROBE_SYMBOL(func);							\
 									\
@@ -515,11 +521,13 @@ interrupt_handler long func(struct pt_regs *regs)			\
 {									\
 	long ret;							\
 									\
+	add_random_kstack_offset();					\
 	interrupt_enter_prepare(regs);					\
 									\
 	ret = ____##func (regs);					\
 									\
 	interrupt_exit_prepare(regs);					\
+	choose_random_kstack_offset(mftb());				\
 									\
 	return ret;							\
 }									\
@@ -548,11 +556,13 @@ static __always_inline void ____##func(struct pt_regs *regs);		\
 									\
 interrupt_handler void func(struct pt_regs *regs)			\
 {									\
+	add_random_kstack_offset();					\
 	interrupt_async_enter_prepare(regs);				\
 									\
 	____##func (regs);						\
 									\
 	interrupt_async_exit_prepare(regs);				\
+	choose_random_kstack_offset(mftb());				\
 }									\
 NOKPROBE_SYMBOL(func);							\
 									\
