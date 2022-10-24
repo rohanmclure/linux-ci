@@ -68,6 +68,7 @@
 
 #include <linux/context_tracking.h>
 #include <linux/hardirq.h>
+#include <linux/randomize_kstack.h>
 #include <asm/cputime.h>
 #include <asm/firmware.h>
 #include <asm/ftrace.h>
@@ -440,9 +441,11 @@ interrupt_handler long func(struct pt_regs *regs)			\
 	long ret;							\
 									\
 	__hard_RI_enable();						\
+	add_random_kstack_offset();					\
 									\
 	ret = ____##func (regs);					\
 									\
+	choose_random_kstack_offset(mftb());				\
 	return ret;							\
 }									\
 NOKPROBE_SYMBOL(func);							\
@@ -472,9 +475,11 @@ static __always_inline void ____##func(struct pt_regs *regs);		\
 interrupt_handler void func(struct pt_regs *regs)			\
 {									\
 	interrupt_enter_prepare(regs);					\
+	add_random_kstack_offset();					\
 									\
 	____##func (regs);						\
 									\
+	choose_random_kstack_offset(mftb());				\
 	interrupt_exit_prepare(regs);					\
 }									\
 NOKPROBE_SYMBOL(func);							\
@@ -507,9 +512,11 @@ interrupt_handler long func(struct pt_regs *regs)			\
 	long ret;							\
 									\
 	interrupt_enter_prepare(regs);					\
+	add_random_kstack_offset();					\
 									\
 	ret = ____##func (regs);					\
 									\
+	choose_random_kstack_offset(mftb());				\
 	interrupt_exit_prepare(regs);					\
 									\
 	return ret;							\
@@ -540,9 +547,11 @@ static __always_inline void ____##func(struct pt_regs *regs);		\
 interrupt_handler void func(struct pt_regs *regs)			\
 {									\
 	interrupt_async_enter_prepare(regs);				\
+	add_random_kstack_offset();					\
 									\
 	____##func (regs);						\
 									\
+	choose_random_kstack_offset(mftb());				\
 	interrupt_async_exit_prepare(regs);				\
 }									\
 NOKPROBE_SYMBOL(func);							\
@@ -577,9 +586,11 @@ interrupt_handler long func(struct pt_regs *regs)			\
 	long ret;							\
 									\
 	interrupt_nmi_enter_prepare(regs, &state);			\
+	add_random_kstack_offset();					\
 									\
 	ret = ____##func (regs);					\
 									\
+	choose_random_kstack_offset(mftb());				\
 	interrupt_nmi_exit_prepare(regs, &state);			\
 									\
 	return ret;							\
