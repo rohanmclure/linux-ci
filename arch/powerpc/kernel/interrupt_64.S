@@ -17,8 +17,13 @@
  * macros for handling user register sanitisation
  */
 #ifdef CONFIG_INTERRUPT_SANITIZE_REGISTERS
+#define SANITIZE_ZEROIZE_SYSCALL_GPRS()	\
+	ZEROIZE_GPR(0)			\	
+	ZEROIZE_GPRS(5, 12)		\
+	ZEROIZE_NVGPRS()
 #define SANITIZE_RESTORE_NVGPRS()	REST_NVGPRS(r1)
 #else
+#define SANITIZE_ZEROIZE_SYSCALL_GPRS()
 #define SANITIZE_RESTORE_NVGPRS()
 #endif /* CONFIG_INTERRUPT_SANITIZE_REGISTERS */
 
@@ -109,9 +114,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 	 * Zero user registers to prevent influencing speculative execution
 	 * state of kernel code.
 	 */
-	ZEROIZE_GPR(0)
-	ZEROIZE_GPRS(5, 12)
-	ZEROIZE_NVGPRS()
+	SANITIZE_ZEROIZE_SYSCALL_GPRS()
 	bl	system_call_exception
 
 .Lsyscall_vectored_\name\()_exit:
@@ -296,9 +299,7 @@ END_BTB_FLUSH_SECTION
 	 * Zero user registers to prevent influencing speculative execution
 	 * state of kernel code.
 	 */
-	ZEROIZE_GPR(0)
-	ZEROIZE_GPRS(5, 12)
-	ZEROIZE_NVGPRS()
+	SANITIZE_ZEROIZE_SYSCALL_GPRS()
 	bl	system_call_exception
 
 .Lsyscall_exit:
@@ -339,7 +340,7 @@ BEGIN_FTR_SECTION
 	stdcx.	r0,0,r1			/* to clear the reservation */
 END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
-	REST_NVGPRS(r1)
+	SANITIZE_RESTORE_NVGPRS()
 	cmpdi	r3,0
 	bne	.Lsyscall_restore_regs
 	/* Zero volatile regs that may contain sensitive kernel data */
@@ -367,6 +368,9 @@ END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
 .Lsyscall_restore_regs:
 	ld	r3,_CTR(r1)
 	ld	r4,_XER(r1)
+#ifndef CONFIG_INTERRUPT_SANITIZE_REGISTERS
+	REST_NVGPRS(r1)
+#endif
 	mtctr	r3
 	mtspr	SPRN_XER,r4
 	REST_GPR(0, r1)
