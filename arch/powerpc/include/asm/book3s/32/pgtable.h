@@ -242,6 +242,7 @@ static inline void pmd_clear(pmd_t *pmdp)
 	*pmdp = __pmd(0);
 }
 
+#define pud_leaf pud_leaf
 
 /*
  * When flushing the tlb entry for a page, we also need to flush the hash
