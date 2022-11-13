@@ -201,6 +201,7 @@ static inline pte_t pte_mkexec(pte_t pte)
 }
 #endif
 
+#define pud_leaf		pud_leaf
 #define pmd_none(pmd)		(!pmd_val(pmd))
 #define	pmd_bad(pmd)		(pmd_val(pmd) & _PMD_BAD)
 #define	pmd_present(pmd)	(pmd_val(pmd) & _PMD_PRESENT_MASK)
