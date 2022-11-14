@@ -226,6 +226,8 @@ static void __do_irq(struct pt_regs *regs, unsigned long oldsp)
 {
 	unsigned int irq;
 
+	add_random_kstack_offset();
+
 	trace_irq_entry(regs);
 
 	check_stack_overflow(oldsp);
