@@ -1206,6 +1206,13 @@ config HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
 	  to the compiler, so it will attempt to add canary checks regardless
 	  of the static branch state.
 
+config HAVE_ARCH_KSTACK_OFFSET_STORE
+	def_bool n
+	depends on HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
+	help
+	  An architecture may opt for its own storage and access logic for
+	  the kstack offset, so as to avoid mmu faults on interrupt handling.
+
 config RANDOMIZE_KSTACK_OFFSET
 	bool "Support for randomizing kernel stack offset on syscall entry" if EXPERT
 	default y

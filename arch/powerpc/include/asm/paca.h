@@ -273,6 +273,9 @@ struct paca_struct {
 	u16 slb_save_cache_ptr;
 #endif
 #endif /* CONFIG_PPC_BOOK3S_64 */
+#ifdef CONFIG_RANDOMIZE_KSTACK_OFFSET
+	u32 kstack_offset;
+#endif
 #ifdef CONFIG_STACKPROTECTOR
 	unsigned long canary;
 #endif

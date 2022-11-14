@@ -9,7 +9,13 @@
 
 DECLARE_STATIC_KEY_MAYBE(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,
 			 randomize_kstack_offset);
+// Figure out a suitable config option for early memory
+#ifndef CONFIG_HAVE_ARCH_KSTACK_OFFSET_STORE
 DECLARE_PER_CPU(u32, kstack_offset);
+
+#define read_kstack_offset()		raw_cpu_read(kstack_offset)
+#define write_kstack_offset(offset)	raw_cpu_write(kstack_offset, (offset))
+#endif
 
 /*
  * Do not use this anywhere else in the kernel. This is used here because
@@ -52,7 +58,7 @@ DECLARE_PER_CPU(u32, kstack_offset);
 #define add_random_kstack_offset() do {					\
 	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,	\
 				&randomize_kstack_offset)) {		\
-		u32 offset = raw_cpu_read(kstack_offset);		\
+		u32 offset = read_kstack_offset();			\
 		u8 *ptr = __kstack_alloca(KSTACK_OFFSET_MAX(offset));	\
 		/* Keep allocation even after "ptr" loses scope. */	\
 		asm volatile("" :: "r"(ptr) : "memory");		\
@@ -79,9 +85,9 @@ DECLARE_PER_CPU(u32, kstack_offset);
 #define choose_random_kstack_offset(rand) do {				\
 	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,	\
 				&randomize_kstack_offset)) {		\
-		u32 offset = raw_cpu_read(kstack_offset);		\
+		u32 offset = read_kstack_offset();			\
 		offset ^= (rand);					\
-		raw_cpu_write(kstack_offset, offset);			\
+		write_kstack_offset(offset);				\
 	}								\
 } while (0)
 #else /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
