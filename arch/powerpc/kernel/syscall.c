@@ -5,6 +5,7 @@
 #include <linux/randomize_kstack.h>
 
 #include <asm/interrupt.h>
+#include <asm/kstack.h>
 #include <asm/kup.h>
 #include <asm/syscall.h>
 #include <asm/time.h>

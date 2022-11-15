@@ -73,6 +73,7 @@
 #include <asm/ftrace.h>
 #include <asm/kprobes.h>
 #include <asm/runlatch.h>
+#include <asm/kstack.h>
 
 #ifdef CONFIG_PPC64
 /*
