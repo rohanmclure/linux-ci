@@ -202,6 +202,8 @@ void set_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
 	 */
 	pte = set_pte_filter(pte);
 
+	page_table_check_pte_set(mm, addr, ptep, pte);
+
 	/* Perform the setting of the PTE */
 	__set_pte_at(mm, addr, ptep, pte, 0);
 }
