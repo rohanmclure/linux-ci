@@ -464,7 +464,10 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
 static inline void pte_clear(struct mm_struct *mm, unsigned long addr,
 			     pte_t * ptep)
 {
-	pte_update(mm, addr, ptep, ~0UL, 0, 0);
+	pte_t old_pte;
+
+	old_pte = __pte(pte_update(mm, addr, ptep, ~0UL, 0, 0));
+	page_table_check_pte_clear(mm, addr, old_pte);
 }
 
 static inline int pte_dirty(pte_t pte)
