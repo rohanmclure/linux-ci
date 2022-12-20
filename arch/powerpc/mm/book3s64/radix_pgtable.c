@@ -1007,6 +1007,7 @@ pmd_t radix__pmdp_huge_get_and_clear(struct mm_struct *mm,
 
 	old = radix__pmd_hugepage_update(mm, addr, pmdp, ~0UL, 0);
 	old_pmd = __pmd(old);
+	page_table_check_pte_clear(mm, addr, pmd_pte(old_pmd));
 	return old_pmd;
 }
 
