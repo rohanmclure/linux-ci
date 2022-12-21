@@ -58,6 +58,7 @@ int pmdp_set_access_flags(struct vm_area_struct *vma, unsigned long address,
 		 * We can use MMU_PAGE_2M here, because only radix
 		 * path look at the psize.
 		 */
+		set_pmd_at(vma->vm_mm, address, pmdp, entry);
 		__ptep_set_access_flags(vma, pmdp_ptep(pmdp),
 					pmd_pte(entry), address, MMU_PAGE_2M);
 	}
