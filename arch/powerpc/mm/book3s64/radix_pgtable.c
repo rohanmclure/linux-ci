@@ -947,6 +947,7 @@ pmd_t radix__pmdp_collapse_flush(struct vm_area_struct *vma, unsigned long addre
 	 * khugepaged calls this for normal pmd
 	 */
 	pmd = *pmdp;
+	page_table_check_pte_clear(vma->vm_mm, address, pmd_pte(pmd));
 	pmd_clear(pmdp);
 
 	radix__flush_tlb_collapsed_pmd(vma->vm_mm, address);
