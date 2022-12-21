@@ -232,6 +232,7 @@ int ptep_set_access_flags(struct vm_area_struct *vma, unsigned long address,
 	changed = !pte_same(*(ptep), entry);
 	if (changed) {
 		assert_pte_locked(vma->vm_mm, address);
+		page_table_check_pte_set(vma->vm_mm, address, ptep, entry);
 		__ptep_set_access_flags(vma, ptep, entry,
 					address, mmu_virtual_psize);
 	}
