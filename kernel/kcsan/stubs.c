@@ -3,6 +3,7 @@
 #include <linux/bug.h>
 #include <linux/types.h>
 
+#if !__has_builtin(__atomic_store_8)
 void __atomic_store_8(volatile void *p, u64 v, int i)
 {
 	BUG();
@@ -52,3 +53,4 @@ u64 __atomic_fetch_nand_8(volatile void *p, u64 v, int i)
 {
 	BUG();
 }
+#endif /* __atomic_store_8 */
