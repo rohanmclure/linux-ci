@@ -88,7 +88,8 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
 	WARN_ON(!(pmd_large(pmd)));
 #endif
 	trace_hugepage_set_pmd(addr, pmd_val(pmd));
-	return set_pte_at(mm, addr, pmdp_ptep(pmdp), pmd_pte(pmd));
+
+	return __set_pte_at(mm, addr, pmdp_ptep(pmdp), /* set_pte_filter */pmd_pte(pmd), 0);
 }
 
 static void do_serialize(void *arg)

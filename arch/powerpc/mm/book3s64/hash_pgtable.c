@@ -353,7 +353,7 @@ pmd_t hash__pmdp_huge_get_and_clear(struct mm_struct *mm,
 
 	old = pmd_hugepage_update(mm, addr, pmdp, ~0UL, 0);
 	old_pmd = __pmd(old);
-	page_table_check_pte_clear(mm, addr, pmd_pte(old_pmd));
+	page_table_check_pmd_clear(mm, addr, old_pmd);
 	/*
 	 * We have pmd == none and we are holding page_table_lock.
 	 * So we can safely go and clear the pgtable hash
