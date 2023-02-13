@@ -187,8 +187,8 @@ static pte_t set_access_flags_filter(pte_t pte, struct vm_area_struct *vma,
 /*
  * set_pte stores a linux PTE into the linux page table.
  */
-void set_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
-		pte_t pte)
+void set_pte(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
+	     pte_t pte)
 {
 	/*
 	 * Make sure hardware valid bit is not set. We don't do

@@ -154,8 +154,8 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
 /* Insert a PTE, top-level function is out of line. It uses an inline
  * low level function in the respective pgtable-* files
  */
-extern void set_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
-		       pte_t pte);
+extern void set_pte(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
+		    pte_t pte);
 
 /* This low level function performs the actual PTE insertion
  * Setting the PTE depends on the MMU type and other factors. It's
