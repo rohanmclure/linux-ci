@@ -1243,14 +1243,19 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
 	return hash__pmdp_huge_get_and_clear(mm, addr, pmdp);
 }
 
-static inline pmd_t pmdp_collapse_flush(struct vm_area_struct *vma,
-					unsigned long address, pmd_t *pmdp)
+static inline pmd_t __pmdp_collapse_flush(struct vm_area_struct *vma, struct mm_struct *mm,
+					  unsigned long address, pmd_t *pmdp)
 {
 	if (radix_enabled())
 		return radix__pmdp_collapse_flush(vma, address, pmdp);
 	return hash__pmdp_collapse_flush(vma, address, pmdp);
 }
-#define pmdp_collapse_flush pmdp_collapse_flush
+#define pmdp_collapse_flush(__vma, __addr, __pmdp)			\
+({									\
+	struct vm_area_struct *_vma = (__vma);				\
+									\
+	__pmdp_collapse_flush(_vma, _vma->vm_mm, (__addr), (__pmdp));	\
+})
 
 #define __HAVE_ARCH_PMDP_HUGE_GET_AND_CLEAR_FULL
 pmd_t pmdp_huge_get_and_clear_full(struct vm_area_struct *vma,
