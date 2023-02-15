@@ -152,6 +152,7 @@
 #endif
 
 #ifndef __ASSEMBLY__
+#include <linux/page_table_check.h>
 
 #define pmd_none(pmd)		(!pmd_val(pmd))
 #define	pmd_bad(pmd)		(pmd_val(pmd) & _PMD_BAD)

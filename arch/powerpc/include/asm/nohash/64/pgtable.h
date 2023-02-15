@@ -78,6 +78,7 @@
 #define H_PAGE_4K_PFN 0
 
 #ifndef __ASSEMBLY__
+#include <linux/page_table_check.h>
 /* pte_clear moved to later in this file */
 
 #define PMD_BAD_BITS		(PTE_TABLE_SIZE-1)

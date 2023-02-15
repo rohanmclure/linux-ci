@@ -22,6 +22,7 @@
 #include <linux/mm.h>
 #include <linux/percpu.h>
 #include <linux/hardirq.h>
+#include <linux/page_table_check.h>
 #include <linux/hugetlb.h>
 #include <asm/tlbflush.h>
 #include <asm/tlb.h>
@@ -200,12 +201,8 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
 	 */
 	pte = set_pte_filter(pte, addr);
 
-	/*
-	 * We don't need to call arch_enter/leave_lazy_mmu_mode()
-	 * because we expect set_ptes to be only be used on not present
-	 * and not hw_valid ptes. Hence there is no translation cache flush
-	 * involved that need to be batched.
-	 */
+	page_table_check_ptes_set(mm, ptep, pte, nr);
+
 	for (;;) {
 
 		/*
