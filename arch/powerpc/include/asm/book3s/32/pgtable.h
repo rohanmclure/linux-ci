@@ -517,6 +517,10 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
 	return __pte((pte_val(pte) & _PAGE_CHG_MASK) | pgprot_val(newprot));
 }
 
+static inline bool pmd_user(pmd_t pmd)
+{
+	return 0;
+}
 
 
 /* This low level function performs the actual PTE insertion
