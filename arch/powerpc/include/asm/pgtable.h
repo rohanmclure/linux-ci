@@ -40,6 +40,7 @@ struct mm_struct;
 #define HAVE_PAGE_AGP
 
 #ifndef __ASSEMBLY__
+#include <linux/page_table_check.h>
 
 void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
 		pte_t pte, unsigned int nr);
