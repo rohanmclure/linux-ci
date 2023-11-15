@@ -236,7 +236,7 @@ static inline int pud_pfn(pud_t pud)
 
 static inline bool pte_user_accessible_page(pte_t pte)
 {
-	return pte_present(pte) && pte_user(pte);
+	return pte_present(pte) && pte_read(pte);
 }
 
 static inline bool pmd_user_accessible_page(pmd_t pmd)

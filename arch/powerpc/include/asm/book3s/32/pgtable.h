@@ -49,14 +49,6 @@
 
 #define _PAGE_HPTEFLAGS _PAGE_HASHPTE
 
-#ifndef __ASSEMBLY__
-#include <linux/page_table_check.h>
-static inline bool pte_user(pte_t pte)
-{
-	return pte_val(pte) & _PAGE_USER;
-}
-#endif /* __ASSEMBLY__ */
-
 /*
  * Location of the PFN in the PTE. Most 32-bit platforms use the same
  * as _PAGE_SHIFT here (ie, naturally aligned).
