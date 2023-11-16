@@ -251,6 +251,29 @@ static inline int pud_pfn(pud_t pud)
 }
 #endif
 
+static inline bool pte_user_accessible_page(pte_t pte)
+{
+	return pte_access_permitted(pte, false);
+}
+
+static inline bool pmd_user_accessible_page(pmd_t pmd)
+{
+#ifdef pmd_access_permitted
+	return pmd_access_permitted(pmd, false);
+#else
+	return false;
+#endif
+}
+
+static inline bool pud_user_accessible_page(pud_t pud)
+{
+#ifdef pud_access_permitted
+	return pud_access_permitted(pud, false);
+#else
+	return false;
+#endif
+}
+
 #endif /* __ASSEMBLY__ */
 
 #endif /* _ASM_POWERPC_PGTABLE_H */
