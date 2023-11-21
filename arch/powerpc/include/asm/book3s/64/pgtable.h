@@ -544,6 +544,11 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
 	return arch_pte_access_permitted(pte_val(pte), write, 0);
 }
 
+static inline bool pte_user_accessible_page(pte_t pte)
+{
+	return pte_present(pte) && pte_user(pte);
+}
+
 /*
  * Conversion functions: convert a page and protection to a page entry,
  * and a page entry and page directory to the page they refer to.
@@ -887,6 +892,8 @@ static inline int pud_present(pud_t pud)
 
 extern struct page *pud_page(pud_t pud);
 extern struct page *pmd_page(pmd_t pmd);
+
+#define pud_pte pud_pte
 static inline pte_t pud_pte(pud_t pud)
 {
 	return __pte_raw(pud_raw(pud));
@@ -1043,6 +1050,7 @@ static inline void __kernel_map_pages(struct page *page, int numpages, int enabl
 }
 #endif
 
+#define pmd_pte pmd_pte
 static inline pte_t pmd_pte(pmd_t pmd)
 {
 	return __pte_raw(pmd_raw(pmd));
