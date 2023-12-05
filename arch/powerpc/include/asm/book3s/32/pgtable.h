@@ -317,7 +317,7 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr,
 {
 	pte_t old_pte = __pte(pte_update(mm, addr, ptep, ~_PAGE_HASHPTE, 0, 0));
 
-	page_table_check_pte_clear(mm, old_pte);
+	page_table_check_pte_clear(mm, addr, old_pte);
 
 	return old_pte;
 }

@@ -425,7 +425,7 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
 {
 	pte_t old_pte = __pte(pte_update(mm, addr, ptep, ~0UL, 0, 0));
 
-	page_table_check_pte_clear(mm, old_pte);
+	page_table_check_pte_clear(mm, addr, old_pte);
 
 	return old_pte;
 }
@@ -443,7 +443,7 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
 		 * hence can be sure there is no parallel set_pte.
 		 */
 		old_pte = radix__ptep_get_and_clear_full(mm, addr, ptep, full);
-		page_table_check_pte_clear(mm, old_pte);
+		page_table_check_pte_clear(mm, addr, old_pte);
 
 		return old_pte;
 	}
@@ -552,23 +552,6 @@ static inline bool pte_access_permitted(pte_t pte, bool write)
 		return false;
 
 	return arch_pte_access_permitted(pte_val(pte), write, 0);
-}
-
-static inline bool pte_user_accessible_page(pte_t pte)
-{
-	return pte_present(pte) && pte_user(pte);
-}
-
-#define pmd_user_accessible_page pmd_user_accessible_page
-static inline bool pmd_user_accessible_page(pmd_t pmd)
-{
-	return pte_user_accessible_page(pmd_pte(pmd));
-}
-
-#define pud_user_accessible_page pud_user_accessible_page
-static inline bool pud_user_accessible_page(pud_t pud)
-{
-	return pte_user_accessible_page(pud_pte(pud));
 }
 
 /*
@@ -1369,7 +1352,7 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
 		old_pmd = hash__pmdp_huge_get_and_clear(mm, addr, pmdp);
 	}
 
-	page_table_check_pmd_clear(mm, old_pmd);
+	page_table_check_pmd_clear(mm, addr, old_pmd);
 
 	return old_pmd;
 }
@@ -1382,7 +1365,7 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
 
 	if (radix_enabled()) {
 		old_pud = radix__pudp_huge_get_and_clear(mm, addr, pudp);
-		page_table_check_pud_clear(mm, old_pud);
+		page_table_check_pud_clear(mm, addr, old_pud);
 		return old_pud;
 	}
 	BUG();
@@ -1497,6 +1480,23 @@ static inline bool is_pte_rw_upgrade(unsigned long old_val, unsigned long new_va
 		return true;
 
 	return false;
+}
+
+static inline bool pte_user_accessible_page(pte_t pte, unsigned long addr)
+{
+	return pte_present(pte) && pte_user(pte);
+}
+
+#define pmd_user_accessible_page pmd_user_accessible_page
+static inline bool pmd_user_accessible_page(pmd_t pmd, unsigned long addr)
+{
+	return pte_user_accessible_page(pmd_pte(pmd), addr);
+}
+
+#define pud_user_accessible_page pud_user_accessible_page
+static inline bool pud_user_accessible_page(pud_t pud, unsigned long addr)
+{
+	return pte_user_accessible_page(pud_pte(pud), addr);
 }
 
 /*

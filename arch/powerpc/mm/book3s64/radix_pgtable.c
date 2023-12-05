@@ -1405,7 +1405,7 @@ pmd_t radix__pmdp_collapse_flush(struct vm_area_struct *vma, unsigned long addre
 	pmd = *pmdp;
 	pmd_clear(pmdp);
 
-	page_table_check_pmd_clear(vma->vm_mm, pmd);
+	page_table_check_pmd_clear(vma->vm_mm, address, pmd);
 
 	radix__flush_tlb_collapsed_pmd(vma->vm_mm, address);
 

@@ -233,7 +233,7 @@ pmd_t hash__pmdp_collapse_flush(struct vm_area_struct *vma, unsigned long addres
 	pmd = *pmdp;
 	pmd_clear(pmdp);
 
-	page_table_check_pmd_clear(vma->vm_mm, pmd);
+	page_table_check_pmd_clear(vma->vm_mm, address, pmd);
 
 	/*
 	 * Wait for all pending hash_page to finish. This is needed
