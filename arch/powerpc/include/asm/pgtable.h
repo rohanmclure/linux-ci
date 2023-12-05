@@ -251,31 +251,23 @@ static inline int pud_pfn(pud_t pud)
 }
 #endif
 
-#ifndef pmd_pte
-#define pmd_pte pmd_pte
-static inline pte_t pmd_pte(pmd_t pmd)
-{
-	return __pte(pmd_val(pmd));
-}
-#endif
-
-#ifndef pud_pte
-#define pud_pte pud_pte
-static inline pte_t pud_pte(pud_t pud)
-{
-	return __pte(pud_val(pud));
-}
-#endif
-
+#ifndef pmd_user_accessible_page
+#define pmd_user_accessible_page pmd_user_accessible_page
 static inline bool pmd_user_accessible_page(pmd_t pmd)
 {
-	return pte_user_accessible_page(pmd_pte(pmd));
+	WARN_ONCE(1, "pmd: platform does not use pmd entries directly");
+	return false;
 }
+#endif
 
+#ifndef pud_user_accessible_page
+#define pud_user_accessible_page pud_user_accessible_page
 static inline bool pud_user_accessible_page(pud_t pud)
 {
-	return pte_user_accessible_page(pud_pte(pud));
+	WARN_ONCE(1, "pud: platform does not use pud entries directly");
+	return false;
 }
+#endif
 
 #endif /* __ASSEMBLY__ */
 
