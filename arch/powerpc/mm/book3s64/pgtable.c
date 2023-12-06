@@ -3,6 +3,7 @@
  * Copyright 2015-2016, Aneesh Kumar K.V, IBM Corporation.
  */
 
+#include "asm/pgtable.h"
 #include <linux/sched.h>
 #include <linux/mm_types.h>
 #include <linux/memblock.h>
@@ -118,7 +119,7 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
 #endif
 	trace_hugepage_set_pmd(addr, pmd_val(pmd));
 	page_table_check_pmd_set(mm, addr, pmdp, pmd);
-	return __set_pte_at(mm, addr, pmdp_ptep(pmdp), pmd_pte(pmd), 0);
+	return set_pte_unchecked(mm, addr, pmdp_ptep(pmdp), pmd_pte(pmd));
 }
 
 void set_pud_at(struct mm_struct *mm, unsigned long addr,
@@ -544,7 +545,7 @@ void ptep_modify_prot_commit(struct vm_area_struct *vma, unsigned long addr,
 	if (radix_enabled())
 		return radix__ptep_modify_prot_commit(vma, addr,
 						      ptep, old_pte, pte);
-	__set_pte_at(vma->vm_mm, addr, ptep, pte, 0);
+	set_pte_unchecked(vma->vm_mm, addr, ptep, pte);
 }
 
 /*

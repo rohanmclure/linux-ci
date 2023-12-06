@@ -17,6 +17,7 @@
  *      Rework for PPC64 port.
  */
 
+#include "linux/mm_types.h"
 #include <linux/kernel.h>
 #include <linux/gfp.h>
 #include <linux/mm.h>
@@ -229,6 +230,13 @@ void set_ptes(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
 		 */
 		pte = pfn_pte(pte_pfn(pte) + 1, pte_pgprot((pte)));
 	}
+}
+
+void set_pte_unchecked(struct mm_struct *mm, unsigned long addr,
+		       pte_t *ptep, pte_t pte)
+{
+	pte = set_pte_filter(pte, addr);
+	__set_pte_at(mm, addr, ptep, pte, 0);
 }
 
 void unmap_kernel_page(unsigned long va)
