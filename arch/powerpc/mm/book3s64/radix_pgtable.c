@@ -110,7 +110,7 @@ static int early_map_kernel_page(unsigned long ea, unsigned long pa,
 	ptep = pte_offset_kernel(pmdp, ea);
 
 set_the_pte:
-	set_pte_at_unchecked(&init_mm, ea, ptep, pfn_pte(pfn, flags));
+	set_pte_at(&init_mm, ea, ptep, pfn_pte(pfn, flags));
 	asm volatile("ptesync": : :"memory");
 	return 0;
 }
